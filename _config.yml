@@ -1,0 +1,47 @@
+# This config file is meant for settings that affect your whole site, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+title: UBC Stat535A W2020
+email: daniel@stat.ubc.ca
+author: Daniel J. McDonald
+author-url: https://dajmcdon.github.io/
+description: > # this means to ignore newlines until "baseurl:"
+  UBC Stat 535A - Statistical Computing (Convex Optimization) Winter Term 2, 2020
+baseurl: "/stat-535-convexopt" # the subpath of your site, e.g.
+url: "https://ubc-stat.github.io"
+lang: en # language can also be set on a per page basis. Primary use right now is only for <html lang="">
+
+# Build settings
+markdown: kramdown
+remote_theme: dajmcdon/minimal-course
+permalink: /:title/
+navbar: light          # other options: dark
+theme-bg: rgb(40, 180, 120)
+navbar-fixed-top: true # if true, also check _sass/bootstrap4-cdn.scss padding top
+logo_path: /assets/img/function.svg # optional
+
+google_fonts: Montserrat
+
+use-license: true
+
+navigation:
+  - title: Syllabus
+    url: /syllabus/
+  - title: Schedule
+    url: /schedule/
+  - title: Slides
+    url: /slides/
+  - title: FAQ
+    url: /faq/
+  - title: github
+    url: https://github.com/UBC-stat/stat-535-convexopt
