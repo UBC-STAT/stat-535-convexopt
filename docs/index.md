@@ -18,5 +18,5 @@ This course focuses on algorithms for solving convex optimization problems and t
 
 Topics include: convex sets and functions, canonical problems, first order numeric optimization, duality and KKT conditions, glimpse of 0th/2nd order methods, coordinate descent and ADMM, path algorithms and regularized statistical models
 
-![](docs/assets/img/weird-newton.jpeg){: class="center-img"}
+![](assets/img/weird-newton.jpeg){: class="center-img"}
 
