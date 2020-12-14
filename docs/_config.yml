@@ -17,7 +17,7 @@ author: Daniel J. McDonald
 author-url: https://dajmcdon.github.io/
 description: > # this means to ignore newlines until "baseurl:"
   UBC Stat 535A - Statistical Computing (Convex Optimization) Winter Term 2, 2020
-baseurl: "/stat-535-convexopt" # the subpath of your site, e.g.
+baseurl: "/stat-535-convexopt/" # the subpath of your site, e.g.
 url: "https://ubc-stat.github.io"
 lang: en # language can also be set on a per page basis. Primary use right now is only for <html lang="">
 
@@ -28,7 +28,7 @@ permalink: /:title/
 navbar: light          # other options: dark
 theme-bg: rgb(40, 180, 120)
 navbar-fixed-top: true # if true, also check _sass/bootstrap4-cdn.scss padding top
-logo_path: assets/img/function.svg # optional
+logo_path: /assets/img/function.svg # optional
 
 google_fonts: Montserrat
 
@@ -36,12 +36,12 @@ use-license: true
 
 navigation:
   - title: Syllabus
-    url: /syllabus/
+    url: syllabus/
   - title: Schedule
-    url: /schedule/
+    url: schedule/
   - title: Slides
-    url: /slides/
+    url: slides/
   - title: FAQ
-    url: /faq/
+    url: faq/
   - title: Github
     url: https://github.com/UBC-stat/stat-535-convexopt
