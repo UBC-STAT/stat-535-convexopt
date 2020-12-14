@@ -1,1 +1,1 @@
-# stat-535-connvexopt
+# stat-535-convexopt

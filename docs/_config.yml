@@ -28,7 +28,7 @@ permalink: /:title/
 navbar: light          # other options: dark
 theme-bg: rgb(40, 180, 120)
 navbar-fixed-top: true # if true, also check _sass/bootstrap4-cdn.scss padding top
-logo_path: /assets/img/function.svg # optional
+logo_path: assets/img/function.svg # optional
 
 google_fonts: Montserrat
 
@@ -43,5 +43,5 @@ navigation:
     url: /slides/
   - title: FAQ
     url: /faq/
-  - title: github
+  - title: Github
     url: https://github.com/UBC-stat/stat-535-convexopt
