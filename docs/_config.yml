@@ -45,3 +45,4 @@ navigation:
     url: faq/
   - title: Github
     url: https://github.com/UBC-stat/stat-535-convexopt
+    icon: "fab fa-github"
