@@ -4,12 +4,12 @@ layout: page
 icon: "fas fa-user-shield"
 ---
 
-Term 2 Winter 2021: Jan 11 - Feb 24 2020 (no class on 2/15 or 2/17)  
+Term 2 Winter 2021: 11 Jan 11 - 24 Feb 2021 (no class on 2/15 or 2/17)  
  
 ### Course info
 __Instructor__:  
 Daniel J. McDonald  
-Office: Earth Sciences Building  
+Office: Earth Sciences Building 3106  
 Website: <https://dajmcdon.github.io/>  
 Email: <daniel@stat.ubc.ca>  
 
@@ -22,7 +22,7 @@ WWW: <https://ubc-stat.github.io/stat-535-convexoptim/>
 
 
 __Lectures__:  
-Mon/Wed 1330h - 1500h UTC-7 Vancouver local time
+Mon/Wed 13:30 - 15:00 UTC-7 Vancouver local time on Zoom (link in Canvas)
 
 
 __Textbooks__:  
@@ -72,7 +72,7 @@ The maximum score is 95 unless you achieve the bonus.
 
 ### Lectures and In-class activites
 
-Lectures will be live on Zoom (see Canvas for the link). Each period will consist of ~50 minutes of lecture and ~30 minutes of group activities (in random break out rooms). Group activities are intended to help you learn better through discussion and also to give you a chance to interact with other students. Each group activity will be worth 2-3 points. You can accumulate up to 20 points for completing these. 
+Lectures will be live on Zoom (see Canvas for the link). Each period will consist of ~50 minutes of lecture and ~30 minutes of group activities (in random break out rooms). Group activities are intended to help you learn better through discussion and also to give you a chance to interact with other students. Each group activity will be worth 1-4 points. You can accumulate up to 20 points for completing these. 
 
 ### Little quiz
 
@@ -80,11 +80,11 @@ On February 22 (at the beginning of class) there will be a little quiz. It will 
 
 ### Homework assignments
 
-There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive $\mbox{score} \times (.8)^{\mbox{days late}}$ unless I am notified in advance of the due date and approve the reason for the delay.
+There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * (.8)^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay.
 
 ### Group/individual project
 
-There will be a project. You may choose to complete it in a group of your choosing or individually. The group can contain at most 4 individuals. The group project will have 2 checkpoints on 1/22 and 2/24 with a short presentation on 2/24.
+There will be a project. You may choose to complete it in a group of your choosing or individually. The group can contain at most 4 individuals. The group project will have 2 checkpoints on 22 January and 24 February with a short presentation on 24 February.
 
 
 
@@ -140,6 +140,14 @@ These are handled according to UBC policy. Please see
 #### Censorship
 
 During this pandemic, the shift to online learning has greatly altered teaching and studying at UBC, including changes to health and safety considerations. Keep in mind that some UBC courses might cover topics that are censored or considered illegal by non-Canadian governments. This may include, but is not limited to, human rights, representative government, defamation, obscenity, gender or sexuality, and historical or current geopolitical controversies. If you are a student living abroad, you will be subject to the laws of your local jurisdiction, and your local authorities might limit your access to course material or take punitive action against you. UBC is strongly committed to academic freedom, but has no control over foreign authorities (please visit [this link](http://www.calendar.ubc.ca/vancouver/index.cfm?tree=3,33,86,0) for an articulation of the values of the University conveyed in the Senate Statement on Academic Freedom). Thus, we recognize that students will have legitimate reason to exercise caution in studying certain subjects. If you have concerns regarding your personal situation, consider postponing taking a course with manifest risks, until you are back on campus or reach out to your academic advisor to find substitute courses. For further information and support, please visit [this link](http://academic.ubc.ca/support-resources/freedom-expression).
+
+#### Take care of yourself
+
+Course work at this level can be intense, and I encourage you to take care of yourself. Do your best to maintain a healthy lifestyle this semester by eating well, exercising, avoiding drugs and alcohol, getting enough sleep and taking some time to relax. This will help you achieve your goals and cope with stress. I struggle with these issues too, and I try hard to set aside time for things that make me happy (cooking, playing/listening to music, exercise, going for walks).
+
+All of us benefit from support during times of struggle. If you are having any problems or concerns, do not hesitate to speak with me. There are also many resources available on campus that can provide help and support. Asking for support sooner rather than later is almost always a good idea.
+
+If you or anyone you know experiences any academic stress, difficult life events, or feelings like anxiety or depression, I strongly encourage you to seek support. UBC Counseling Services (CaPS) is here to help: call 604 822 3811 or visit their [website](https://students.ubc.ca/health/counselling-services). Consider also reaching out to a friend, faculty member, or family member you trust to help get you the support you need.
 
 
 <br>

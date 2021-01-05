@@ -39,10 +39,8 @@ navigation:
     url: syllabus/
   - title: Schedule
     url: schedule/
-  - title: Slides
-    url: slides/
   - title: FAQ
     url: faq/
   - title: Github
-    url: https://github.com/UBC-stat/stat-535-convexopt
+    url: https://github.com/stat535a
     icon: "fab fa-github"
