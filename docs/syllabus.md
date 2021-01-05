@@ -4,7 +4,7 @@ layout: page
 icon: "fas fa-user-shield"
 ---
 
-Term 2020 Winter 2: Jan 11 - Feb 17? 2020  
+Term 2 Winter 2021: Jan 11 - Feb 24 2020 (no class on 2/15 or 2/17)  
  
 ### Course info
 __Instructor__:  
@@ -62,6 +62,29 @@ Lectures and homeworks will focus on both mathematical understanding and coding 
 
 
 ### Course assesssment opportunities
+
+In-class activities max, 20 points  
+Little quiz, 5 points  
+2 Homework assignments, 40 points    
+Project, 30 points (+ 5 bonus in rare cases)
+
+The maximum score is 95 unless you achieve the bonus.
+
+### Lectures and In-class activites
+
+Lectures will be live on Zoom (see Canvas for the link). Each period will consist of ~50 minutes of lecture and ~30 minutes of group activities (in random break out rooms). Group activities are intended to help you learn better through discussion and also to give you a chance to interact with other students. Each group activity will be worth 2-3 points. You can accumulate up to 20 points for completing these. 
+
+### Little quiz
+
+On February 22 (at the beginning of class) there will be a little quiz. It will be entirely multiple choice and T/F. You will have 30 minutes to take it. 
+
+### Homework assignments
+
+There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive $\mbox{score} \times (.8)^{\mbox{days late}}$ unless I am notified in advance of the due date and approve the reason for the delay.
+
+### Group/individual project
+
+There will be a project. You may choose to complete it in a group of your choosing or individually. The group can contain at most 4 individuals. The group project will have 2 checkpoints on 1/22 and 2/24 with a short presentation on 2/24.
 
 
 
