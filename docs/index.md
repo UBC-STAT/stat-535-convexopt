@@ -4,7 +4,7 @@ layout: home
 
 <div class="jumbotron">
   <h1 class="display-3">STAT 535A</h1>
-  <p class="lead">Computational Statistics - Convex Optimization; Winter Term 2 2020</p>
+  <p class="lead">Computational Statistics - Convex Optimization; Winter Term 2 2021</p>
   <hr class="my-4">
   <p class="lead">
   <a class="btn btn-danger btn-lg" href="schedule/" role="button">Jump to Schedule.</a>

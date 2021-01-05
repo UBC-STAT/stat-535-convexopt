@@ -4,7 +4,7 @@ layout: page
 icon: "fas fa-user-shield"
 ---
 
-Term 2 Winter 2021: 11 Jan 11 - 24 Feb 2021 (no class on 2/15 or 2/17)  
+Term 2 Winter 2021: 11 Jan 11 - 24 Feb (no class on 2/15 or 2/17)  
  
 ### Course info
 __Instructor__:  
@@ -147,7 +147,7 @@ Course work at this level can be intense, and I encourage you to take care of yo
 
 All of us benefit from support during times of struggle. If you are having any problems or concerns, do not hesitate to speak with me. There are also many resources available on campus that can provide help and support. Asking for support sooner rather than later is almost always a good idea.
 
-If you or anyone you know experiences any academic stress, difficult life events, or feelings like anxiety or depression, I strongly encourage you to seek support. UBC Counseling Services (CaPS) is here to help: call 604 822 3811 or visit their [website](https://students.ubc.ca/health/counselling-services). Consider also reaching out to a friend, faculty member, or family member you trust to help get you the support you need.
+If you or anyone you know experiences any academic stress, difficult life events, or feelings like anxiety or depression, I strongly encourage you to seek support. UBC Counseling Services is here to help: call 604 822 3811 or visit their [website](https://students.ubc.ca/health/counselling-services). Consider also reaching out to a friend, faculty member, or family member you trust to help get you the support you need.
 
 
 <br>
