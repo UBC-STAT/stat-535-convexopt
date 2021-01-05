@@ -20,5 +20,4 @@ icon: "far fa-calendar-alt"
 |17 Feb | NO CLASS |
 |22 Feb | CVX opt | little quiz | HW2 due |
 |24 Feb | Project presentations |  | P2 due |
-
 {: .table .table-striped}
