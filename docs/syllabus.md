@@ -18,7 +18,7 @@ TBA
 
 
 __Course webpage__:    
-WWW: <https://ubc-stat.github.io/stat-535-convexoptim/>  
+WWW: <https://ubc-stat.github.io/stat-535-convexopt/>  
 
 
 __Lectures__:  
@@ -61,31 +61,59 @@ Lectures and homeworks will focus on both mathematical understanding and coding 
 
 
 
-### Course assesssment opportunities
+### Course assessment opportunities
 
-In-class activities max, 20 points  
-Little quiz, 5 points  
-2 Homework assignments, 40 points    
+In-class activities, max 20 points  
+Little quiz, 10 points  
+2 Homework assignments, 35 points total  
 Project, 30 points (+ 5 bonus in rare cases)
+Professionalism, +/- 5 points
 
-The maximum score is 95 unless you achieve the bonus.
+The maximum score is 95 unless you achieve the bonus or display excellent professionalism. Excellent professionalism means going above and beyond in terms of in-class participation and contributions on the discussion board. Regularly responding to fellow students is a step toward the bonus. Bonus points are rare and will be reserved for excellence. Most students will receive a 0 for their processionalism score. Failing to participate in class, regularly skipping class, leaving your project team out to dry, will result in reduced scores. This should also be rare
 
-### Lectures and In-class activites
+#### Lectures and In-class activites
 
-Lectures will be live on Zoom (see Canvas for the link). Each period will consist of ~50 minutes of lecture and ~30 minutes of group activities (in random break out rooms). Group activities are intended to help you learn better through discussion and also to give you a chance to interact with other students. Each group activity will be worth 1-4 points. You can accumulate up to 20 points for completing these. 
+Lectures will be live on Zoom (see Canvas for the link). Each period will consist of ~50 minutes of lecture and ~30 minutes of group activities (in random break out rooms). Group activities are intended to help you learn through discussion and also to give you a chance to interact with other students. Each group activity will be worth 1-4 points. You can accumulate up to 20 points for completing these. 
 
-### Little quiz
+#### Little quiz
 
-On February 22 (at the beginning of class) there will be a little quiz. It will be entirely multiple choice and T/F. You will have 30 minutes to take it. 
+On February 22 (at the beginning of class) there will be an (individual) little quiz. It will be entirely multiple choice and T/F. You will have 30 minutes to take it. 
 
-### Homework assignments
+#### Homework assignments
 
-There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * (.8)^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay.
+There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * .8^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay. Revisions after 1 week will receive no credit.
 
-### Group/individual project
+Discussing assignments with your classmates is allowed and encouraged, but it is important that every student get practice working on these problems. This means that **all the work you turn in must be your own**. The general policy on homework collaboration is:
+1. You must first make a serious effort to solve the problem.
+1. If you are stuck after doing so, you may ask for help from another student. You may discuss strategies to solve the problem, but you may not look at their code, nor may they spell out the solution to you step-by-step.
+1. Once you have gotten help, you must write your own solution individually. You must disclose, in your GitHub pull request, the names of anyone you got help from.
+1. This also applies in reverse: if someone approaches you for help, you must not provide it unless they have already attempted to solve the problem, and you may not share your code or spell out the solution step-by-step.
+
+These rules also apply to getting help from other people: friends not in the course, homework help websites, Stack Overflow, and so on.
+
+You can always, of course, ask me for help on Slack. And public Slack **questions** are allowed and encouraged. 
+
+You may also use external sources (books, websites, papers, …) to
+* Look up programming language documentation, find useful packages, find explanations for error messages, or remind yourself about the syntax for some feature. I do this all the time in the real world. Wikipedia is your friend.
+* Read about general approaches to solving specific problems (e.g. a guide to dynamic programming or a tutorial on unit testing in your programming language), or
+* Clarify material from the course notes or assignments.
+
+But external sources must be used to **support** your solution, not to **obtain** your solution. You may **not** use them to
+* Find solutions to the specific problems assigned as homework (in words or in code)—you must independently solve the problem assigned, not translate a solution presented online or elsewhere.
+* Find course materials or solutions from this or similar courses from previous years, or
+* Copy text or code to use in your submissions without attribution.
+
+If you use code from online or other sources, you must include code comments identifying the source. It must be clear what code you wrote and what code is from other sources. This rule also applies to text, images, and any other material you submit.
+
+Please talk to me if you have any questions about this policy. Any form of plagiarism or cheating will result in sanctions to be determined by me, including grade penalties (such as negative points for the assignment or reductions in letter grade) or course failure. I am obliged to report violations to the appropriate University authorities. See also the text below.
+
+
+
+#### Group/individual project
 
 There will be a project. You may choose to complete it in a group of your choosing or individually. The group can contain at most 4 individuals. The group project will have 2 checkpoints on 22 January and 24 February with a short presentation on 24 February.
 
+Similar policies on plagiarism as for the homework apply.
 
 
 
