@@ -1,0 +1,216 @@
+---
+title: "02 Convex sets and functions"
+author: 
+  - "STAT 535A"
+  - "Daniel J. McDonald"
+date: 'Last modified - `r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+source("rmd_config.R")
+```
+
+
+## Some history
+
+$$\newcommand{\E}{\mathbb{E}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Var}[1]{\mathbb{V}\left[ #1 \right]}
+\newcommand{\Cov}[2]{\mathrm{Cov}\left[#1,\ #2\right]}
+\newcommand{\given}{\ \vert\ }
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{\mathbb{1}}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}$$
+
+* Historically, linear problems were the focus 
+
+* Linear vs. non-linear guided the discussion
+
+* The more appropriate distinction is between **convex** and **non-convex**
+
+* Why? Because with "convex problems", local minima are global minima
+
+.center[![:scale 50%](gfx/convex-nonconvex.png)]
+
+---
+
+## Definitions
+
+Set $C$ is **convex** iff
+$\forall x,c \in C, \forall t \in [0; 1]\ \ t x + (1-t) y \in C.$
+
+So $C$ is convex iff for any two points in $C$ the segment connecting them is also entirely in $C$.
+
+**Convex combination** of set of points
+$x_1, \ldots, x_k \in \mathbb{R}^n$ is
+$$\Set{\sum\limits_{i=1}^{k} \theta_i x_i : \sum\limits_{i=1}^{k} \theta_i=1,\ \forall i\ \theta_i \in [0; 1]}.$$
+
+**Convex hull** of any $C \in \mathbb{R}^n$, denoted $conv(C)$ is a union
+of all convex combinations of different elements of $C$.
+
+---
+
+## Some examples
+
+-   Empty set, point, line, segment.
+
+-   Norm ball: $\Set{x : \left\lVert x \right\rVert < r}$.
+
+-   Hyperplane $\Set{x : {a}^\top x = b}$, Affine space
+    $\Set{x : A x = b}$.
+
+-   Hyperspace: $\Set{x : {a}^\top x \leq b}$, Polyhedron
+    $\Set{x : A x \leq b}$.
+
+-   Cone such that if $x_1, x_2 \in C$ then
+    $t_1 x_1 + t_2 x_2 \in C \ \forall t_1, t_2 \geq 0$.
+    
+---
+    
+## Cones
+
+Set $C$ is a **cone** iff
+$\forall$ scalars $t \geq 0$, $x \in C \implies t x \in C$.
+
+Type of cones:
+
+* Norm cone: $\Set{(x,t) : \left\lVert x \right\rVert \leq t}$.
+
+* Normal cone for some $C$ and $x \in C$: $N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}$.
+
+* Positive semidefinite cone $S_+^n = \Set{x \in S^n : x \succeq 0}$,
+$S^n$ is Hilbert space.
+
+--
+
+Are all cones convex?
+
+---
+    
+## Key properties of convex sets
+
+**Separating hyperplane.**
+
+$A, B$ are convex, nonempty, disjoint sets. 
+
+Then $$\exists a,b:\ A \subseteq \Set{x : {a}^\top x \leq b},\ \ B \subseteq \Set{x : {a}^\top \geq b}$$
+
+**Supporting hyperplane.** 
+
+$C$ nonempty, convex, $x_0 \in boundary(C)$.
+    
+Then $$\exists a:\ C \subseteq \Set{x : {a}^\top x \leq {a}^\top x_0}$$
+    
+---
+
+## Operations preserving convexity
+
+-   Intersection.
+
+-   Scaling, translation. $C$ is convex $\implies a C + b$ is convex.
+
+-   Affine image and preimage. $f(x) = A x + b$, $C$ is convex
+    $\implies f(C), f^{-1}(C)$ are convex.
+
+-   Lots more (See [@BoydVandenberghe2004], chapter $2$).
+
+$A_1, \ldots, A_k, B \in \mathbb{S}^n$ -- symmetric matrices. Then
+$C = \Set{x \in \mathbb{R}^k : \sum\limits_{i=1}^{k} x_i A_i \preceq B}$.
+
+$f: \mathbb{R}^k \to \mathbb{S}^n$,
+$f(x) = B - \sum\limits_{i=1}^{k} x_i A_i$. $C = f^{-1}(S_+^n)$ --
+affine preimage of convex cone.
+
+---
+
+
+## Convex functions
+
+Function $f: \mathbb{R}^n\to \mathbb{R}$ is *convex* iff
+$\dom{f} \subseteq \mathbb{R}^n$ is convex and
+$$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y)$$
+
+Other definitions:
+
+-   $f$ is *concave* iff $-f$ is convex.
+
+-   $f$ is *strictly convex* iff $\forall t \in (0; 1)$ the inequality
+    in definition is strict.
+
+-   $f$ is *strongly convex* with parameter $\tau$ iff
+    $f(x) - \frac \tau 2 \left\lVert x \right\rVert_2^2$ is convex.
+    
+---    
+
+## Examples
+
+-   $f(x) = \frac 1 x$ is strictly convex, but not strongly.
+
+-   Univariate functions:
+
+    -   $e^{ax}$ is convex $\forall a \in \mathbb{R}$ over $\mathbb{R}$.
+
+    -   $x^a$ convex given $a \geq 1$ or $a \leq 0$ over $\mathbb{R}_+$.
+
+    -   $\log x$ is concave over $\mathbb{R}_+$.
+
+-   Affine ${a}^\top x + b$ is both convex and concave.
+
+-   Quadratic $\frac 1 2 {x}^\top Q x + {b}^\top x + c$ is
+    convex if $Q \succeq 0$.
+
+-   $\left\lVert u - A x \right\rVert_2^2$ convex since
+    ${A}^\top A \succeq 0$.
+
+-   Norms: all vector norms and most matrix norms are convex.
+
+-   Indicator function is convex. $C$ is a convex set, then
+    $I_C(x) = \begin{cases}
+                    0,\ x \in C \\
+                    \infty, otherwise
+                  \end{cases}$.
+
+-   Support function is convex $\forall C$.
+    $I_C^*(x) = \max\limits_{y \in C} {x}^\top y$.
+
+---
+
+## Key properties
+
+-   $f$ is convex iff its epigraph is convex, where
+    $epi(f) = \Set{ (x,t) \in \dom{f} \times \R : f(x) \leq t}$.
+
+-   $f$ is convex $\implies$ all its sublevel sets are convex.
+    $C_t = \Set{x \in \dom{f} : f(x) \leq t}$. The converse is false.
+
+-   Assume $f$ is differentiable. Then $f$ is convex iff $\dom f$ is
+    convex and
+    $\forall x,y \in \dom{f}\ \ f(y) \geq f(x) + \nabla {f(x)}^\top (y-x)$.
+    Essentially, it means that $f$'s graph is above any tangent plain.
+
+-   Assume $f$ is twice differentiable. $f$ is convex iff $\dom{f}$ is
+    convex and $\forall x \in \dom{f}\ \ \nabla^2 f(x) \succeq 0$.
+    
+---    
+    
+## Operations preserving function convexity
+
+-   Nonnegative linear combination.
+
+-   Pointwise maximum. $\forall s \in S\ \ f_s$ is convex
+    $\implies f(x) = \max\limits_S f_s(x)$ is also convex.
+
+-   Partial minimum. $g(x,y)$ convex over variables $x, y$; $C$ convex.
+    Then $f(x) = \min\limits_{y \in C} g(x,y)$ is also convex. E.g.,
+    $f(x) = \max\limits_{y \in C} \left\lVert x-y \right\rVert$ or
+    $f(x) = \min\limits_{y \in C} \left\lVert x-y \right\rVert$.

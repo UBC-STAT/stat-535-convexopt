@@ -20,7 +20,9 @@ source("rmd_config.R")
 
 --
 
+.center[
 ![:scale 50%](https://weareiu.com/wp-content/uploads/2018/12/map-1.png)
+]
 
 --
 
@@ -229,6 +231,8 @@ class: middle, inverse, center
 * 30 minutes, all T/F or multiple choice
 ]
 
+--
+
 .pull-right[
 **Individual homework (x2)**
 
@@ -271,7 +275,7 @@ class: middle, inverse, center
 
 * This is where you complete/submit assignments/projects/in-class-work
 
-* This is hosted by UBC
+* This is hosted by UBC <https://learning.github.ubc.ca/STAT-535A-201-2020W/>
 
 ---
 
@@ -447,20 +451,19 @@ git add .
 
 ## Rules
 
-.
 **In class work**
 * Everyone shares a repo
 * Each group makes a branch (with a creative name)
 * Rename files that you clone.
-* You push your changes and make a PR
+* You push your changes and make a PR against `master`
 * I review your work and merge the PR (I may ask for changes)
 
 **Homework**
 * You each have your own repo
 * You make a branch
 * No need to rename files
-* You must make at least 5 commits
-* Push your changes and make a PR
+* You must make at **least 5 commits**
+* Push your changes (at anytime) and make a PR against `master`
 * I review your work and merge the PR (I may ask for changes)
 
 
@@ -468,7 +471,7 @@ git add .
 * Each team gets a repo.
 * The `submission` branch is yours.
 * Make other branches as you wish to divide up work
-* When ready to submit, make a PR
+* When ready to submit, make a PR against `master`
 
 ---
 

@@ -6,11 +6,11 @@ icon: "far fa-calendar-alt"
 
 * Links below lead to the slides (in the topic column) or the private repository for the exercise (in the activity column)
 * Source code for the slides are available in the [UBC-Stat Github Organization](https://github.com/UBC-stat/stat-535-convexopt)
-* Homework assignments and project repositories are private to the course members. See [here](https://github.com/stat535a) or the Github link in the navigation bar.
+* Homework assignments and project repositories are private to the course members. See [here](https://learning.github.ubc.ca/STAT-535A-201-2020W/) or the Github link in the navigation bar.
 
 |Date      |Topic    |Activity |Deadlines |
 |:---------|:----------------|:------------|:-------------|
-|11 Jan  | Syllabus, git and Github |  Github exercise | 
+|11 Jan  | [Syllabus, git and Github](slides/01-syllabus-vc.html) |  [Github exercise](https://learning.github.ubc.ca/STAT-535A-201-2020W/gh-activity) | 
 |13 Jan | Convex sets and functions | little quiz |
 |18 Jan | Basics and standard problems | transforming problems |
 |20 Jan | GD and subgradients | Ridge regression w/ GD | P1 due |

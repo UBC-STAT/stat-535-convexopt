@@ -4,7 +4,7 @@ layout: page
 icon: "fas fa-user-shield"
 ---
 
-Term 2 Winter 2021: 11 Jan 11 - 24 Feb (no class on 2/15 or 2/17)  
+Term 2 Winter 2020: 11 Jan 11 - 24 Feb (no class on 2/15 or 2/17)  
  
 ### Course info
 __Instructor__:  
@@ -19,7 +19,7 @@ TBA
 
 __Course webpage__:    
 WWW: <https://ubc-stat.github.io/stat-535-convexopt/>  
-
+Github Org: <https://learning.github.ubc.ca/STAT-535A-201-2020W/>
 
 __Lectures__:  
 Mon/Wed 13:30 - 15:00 UTC-7 Vancouver local time on Zoom (link in Canvas)
