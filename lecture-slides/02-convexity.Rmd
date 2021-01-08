@@ -44,12 +44,30 @@ $$\newcommand{\E}{\mathbb{E}}
 
 ---
 
+## Topics today
+
+1. Convex sets and operations preserving them
+2. Convex functions and operations preserving them
+3. Practice
+
+---
+
 ## Definitions
 
 Set $C$ is **convex** iff
 $\forall x,c \in C, \forall t \in [0; 1]\ \ t x + (1-t) y \in C.$
 
 So $C$ is convex iff for any two points in $C$ the segment connecting them is also entirely in $C$.
+
+.pull-left[
+.center[
+![:scale 30%](https://upload.wikimedia.org/wikipedia/commons/6/6b/Convex_polygon_illustration1.svg)
+]]
+
+.pull-right[.center[
+![:scale 30%](https://upload.wikimedia.org/wikipedia/commons/6/6c/Convex_polygon_illustration2.svg)
+]]
+
 
 **Convex combination** of set of points
 $x_1, \ldots, x_k \in \mathbb{R}^n$ is
@@ -62,7 +80,7 @@ of all convex combinations of different elements of $C$.
 
 ## Some examples
 
--   Empty set, point, line, segment.
+-   Trivial: Empty set, point, line, segment.
 
 -   Norm ball: $\Set{x : \left\lVert x \right\rVert < r}$.
 
@@ -82,18 +100,36 @@ of all convex combinations of different elements of $C$.
 Set $C$ is a **cone** iff
 $\forall$ scalars $t \geq 0$, $x \in C \implies t x \in C$.
 
+.center[
+![:scale 20%](https://upload.wikimedia.org/wikipedia/commons/d/d1/Convex_cone_illust.svg)
+]
+
 Type of cones:
 
 * Norm cone: $\Set{(x,t) : \left\lVert x \right\rVert \leq t}$.
 
 * Normal cone for some $C$ and $x \in C$: $N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}$.
 
-* Positive semidefinite cone $S_+^n = \Set{x \in S^n : x \succeq 0}$,
-$S^n$ is Hilbert space.
+* Positive semidefinite cone $S_+^n = \Set{X \in S^n : X \succeq 0}$,
+$S^n$ is the set of symmetric matrices.
 
 --
 
 Are all cones convex?
+
+---
+
+**Normal cone**:
+
+for some $C$ and $x \in C$: 
+
+$$N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}$$
+
+Always convex, regardless of $C$
+
+.center[
+![:scale 50%](gfx/normal-cone.png)
+]
 
 ---
     
@@ -105,24 +141,87 @@ $A, B$ are convex, nonempty, disjoint sets.
 
 Then $$\exists a,b:\ A \subseteq \Set{x : {a}^\top x \leq b},\ \ B \subseteq \Set{x : {a}^\top \geq b}$$
 
+.pull-left[
+.center[
+![:scale 50%](https://upload.wikimedia.org/wikipedia/commons/9/9b/Separating_axis_theorem2008.png)
+]]
+
+.pull-right[.center[
+![:scale 50%](https://upload.wikimedia.org/wikipedia/commons/9/99/Separating_axis_theorem2.svg)
+]]
+
+
+---
+
 **Supporting hyperplane.** 
 
-$C$ nonempty, convex, $x_0 \in boundary(C)$.
+
     
-Then $$\exists a:\ C \subseteq \Set{x : {a}^\top x \leq {a}^\top x_0}$$
+
+
+.pull-left[
+$C$ nonempty, convex, $x_0 \in bd(C)$.
+
+.center[
+![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/6/66/Supporting_hyperplane1.svg)
+]]
+
+.pull-right[.center[
+Then $\exists a:\ C \subseteq \Set{x : {a}^\top x \leq {a}^\top x_0}$
+
+![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/e/ea/Supporting_hyperplane2.svg)
+]]
+
+--
+
+.center[
+![:scale 20%](https://upload.wikimedia.org/wikipedia/commons/3/32/Supporting_hyperplane3.svg)
+]
+
     
 ---
 
 ## Operations preserving convexity
 
--   Intersection.
+-   **Intersection**. $A$ and $B$ convex $\Longrightarrow C = A \cap B$ convex
 
--   Scaling, translation. $C$ is convex $\implies a C + b$ is convex.
+-   **Scaling, translation**. $C$ is convex $\implies a C + b$ is convex.
 
--   Affine image and preimage. $f(x) = A x + b$, $C$ is convex
+-   **Affine image and preimage**. $f(x) = A x + b$, $C$ is convex
     $\implies f(C), f^{-1}(C)$ are convex.
 
--   Lots more (See [@BoydVandenberghe2004], chapter $2$).
+-   Lots more, see BV chapter 2.
+
+---
+
+## Example
+
+The perspective function applied to a convex set: $f_z: \R^n \rightarrow \R^n$ where $f_z (x) = x/z$ and $z \in \R,\ z>0$. 
+
+If $C$ is convex, then $D = f_z(C)$ is.
+
+If $D$ is convex, then $C=f_z^{-1}(D)$ is.
+
+---  
+
+Consider $U,V$ discrete random variables with support $\Set{1,\ldots,m}$ and $\Set{1,\ldots,n}$.
+
+Let $C$ be a set of joint distributions: $\forall p \in C$, $p_{ij} = P(U=i,\ V=j)$, length of $p$ is $n\times m$, $p_{ij} \in [0,1]$, $\sum p_{ij} = 1$.
+
+Let $D$ be the set of conditional distributions: $\forall q \in D$, $q_{ij} = P(U=i\ |\ V=j)$.
+
+Assume $C$ is a convex set. Is $D$?
+
+--
+
+$$q_{ij} = \frac{p_{ij}}{\sum p } \Rightarrow q=\frac{p}{1^\top p}$$
+
+This is the perspective function composed with an affine function. So $D$ is convex if $C$ is.
+
+
+
+---
+Exercise:
 
 $A_1, \ldots, A_k, B \in \mathbb{S}^n$ -- symmetric matrices. Then
 $C = \Set{x \in \mathbb{R}^k : \sum\limits_{i=1}^{k} x_i A_i \preceq B}$.
@@ -140,21 +239,47 @@ Function $f: \mathbb{R}^n\to \mathbb{R}$ is *convex* iff
 $\dom{f} \subseteq \mathbb{R}^n$ is convex and
 $$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y)$$
 
-Other definitions:
+```{r convex-fun, echo=FALSE, fig.align='center', fig.width=4, fig.height=2}
+tibble(x=c(-1,3)) %>%
+  ggplot(aes(x)) + stat_function(fun = ~ .x^2, color=blue, size=2) +
+  annotate("segment", x = .5, y = .5^2, xend = 2, yend = 4, color=orange, size=1.5) +
+  annotate("point", x = c(.5,2), y = c(.5^2,4), color=orange, size=2) +
+  annotate("text", x = c(.5,2), y = c(2, 2), 
+           label = c("(x, f(x))", "(y, f(y))")) +
+  theme_void()
+```
 
--   $f$ is *concave* iff $-f$ is convex.
+* $f$ lies "below" the segment joining $f(x)$ and $f(y)$
 
--   $f$ is *strictly convex* iff $\forall t \in (0; 1)$ the inequality
-    in definition is strict.
+* **Concave** is the opposite
 
--   $f$ is *strongly convex* with parameter $\tau$ iff
-    $f(x) - \frac \tau 2 \left\lVert x \right\rVert_2^2$ is convex.
+.center[
+$f$ concave $\Rightarrow$ $-f$ convex
+]
+
+---
+
+## Modifiers
+
+$f$ is **strictly convex** iff $\forall t \in (0,\ 1),\ \forall x \neq y$  the inequality is strict.
+
+* $f$ linear, then it is convex (and concave). 
+
+* $f$ strictly convex, then it is "more" convex than a line is
+
+
+$f$ is **strongly convex** with parameter $\tau$ iff $f(x) - \frac \tau 2 \left\lVert x \right\rVert_2^2$ is convex.
     
----    
+* $f$ is at least as convex as a quadratic
+
+Strong $\Rightarrow$ Strict $\Rightarrow$ Convex
+
+Same for concave
+---
 
 ## Examples
 
--   $f(x) = \frac 1 x$ is strictly convex, but not strongly.
+-   $f(x) = \frac 1 x$ for $x \in (0,\infty)$ is strictly convex, but not strongly.
 
 -   Univariate functions:
 
@@ -168,49 +293,105 @@ Other definitions:
 
 -   Quadratic $\frac 1 2 {x}^\top Q x + {b}^\top x + c$ is
     convex if $Q \succeq 0$.
+    
+---
 
 -   $\left\lVert u - A x \right\rVert_2^2$ convex since
     ${A}^\top A \succeq 0$.
 
--   Norms: all vector norms and most matrix norms are convex.
+-   Norms: all vector norms and most matrix norms (Schatten norms, induced norms) are convex.
+
+- $\norm{x}_q$ $0 \leq q < 1$ is not convex
+
+
 
 -   Indicator function is convex. $C$ is a convex set, then
-    $I_C(x) = \begin{cases}
-                    0,\ x \in C \\
-                    \infty, otherwise
-                  \end{cases}$.
+    $$I_C(x) = \begin{cases} 0 & x \in C \\ \infty & \mbox{otherwise} \end{cases}$$
 
--   Support function is convex $\forall C$.
-    $I_C^*(x) = \max\limits_{y \in C} {x}^\top y$.
+-   Support function is convex for any set $C$.
+    $$I_C^*(x) = \max\limits_{y \in C} {x}^\top y$$
 
 ---
 
 ## Key properties
 
--   $f$ is convex iff its epigraph is convex, where
-    $epi(f) = \Set{ (x,t) \in \dom{f} \times \R : f(x) \leq t}$.
+- $f$ is convex iff its restriction to any line is convex
+
+-   $f$ is convex iff its **epigraph** is convex, where
+    $$\textrm{epi}(f) = \Set{ (x,t) \in \dom{f} \times \R : f(x) \leq t}$$.
+    
+```{r epigraph, echo=FALSE, fig.align='center', fig.width=4, fig.height=2}
+xs = seq(.5,2, length.out = 100)
+tibble(x=c(-1,3)) %>%
+  ggplot(aes(x)) + 
+  annotate("ribbon", x = xs, ymin = xs^2, ymax = 10, fill=orange) +
+  annotate("text", x = 1.5, y = 5, label = "epi(f)") +
+  stat_function(fun = ~ .x^2, color=blue, size=2) +
+  coord_cartesian(ylim=c(0,9)) +
+  theme_void()
+```
 
 -   $f$ is convex $\implies$ all its sublevel sets are convex.
     $C_t = \Set{x \in \dom{f} : f(x) \leq t}$. The converse is false.
-
--   Assume $f$ is differentiable. Then $f$ is convex iff $\dom f$ is
-    convex and
-    $\forall x,y \in \dom{f}\ \ f(y) \geq f(x) + \nabla {f(x)}^\top (y-x)$.
-    Essentially, it means that $f$'s graph is above any tangent plain.
-
--   Assume $f$ is twice differentiable. $f$ is convex iff $\dom{f}$ is
-    convex and $\forall x \in \dom{f}\ \ \nabla^2 f(x) \succeq 0$.
     
----    
+---
+
+The definition $$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y))$$ is sometimes called **zeroth-order** definition
+
+**First order** characterization: if $f$ is differentiable, then $f$ is convex iff $\dom f$ is convex and
+    $$\forall x,y \in \dom{f}\ \ f(y) \geq f(x) + \nabla {f(x)}^\top (y-x)$$
+    
+Essentially, it means that $f$'s graph lies above any tangent plane.
+    
+Note the implication: if $f$ is differentiable, then $\nabla f(x) = 0 \Rightarrow x$ minimizes $f$
+
+**Second order** characterization: if $f$ is twice differentiable, then $f$ is convex iff $\dom{f}$ is
+    convex and $$\forall x \in \dom{f}\ \ \nabla^2 f(x) \succeq 0$$
+    
+---
     
 ## Operations preserving function convexity
 
--   Nonnegative linear combination.
+Nonnegative linear combination.
 
--   Pointwise maximum. $\forall s \in S\ \ f_s$ is convex
-    $\implies f(x) = \max\limits_S f_s(x)$ is also convex.
+Pointwise maximum. $\forall s \in S\ \ f_s$ is convex
+    $\implies f(x) = \max_{s \in S} f_s(x)$ is also convex.
 
--   Partial minimum. $g(x,y)$ convex over variables $x, y$; $C$ convex.
-    Then $f(x) = \min\limits_{y \in C} g(x,y)$ is also convex. E.g.,
-    $f(x) = \max\limits_{y \in C} \left\lVert x-y \right\rVert$ or
-    $f(x) = \min\limits_{y \in C} \left\lVert x-y \right\rVert$.
+Partial minimum. If $g(x,y)$ is convex over variables $x, y$ and $C$ is  convex, then $f(x) = \min\limits_{y \in C} g(x,y)$ is also convex. 
+    
+--
+
+Example (distance to a set)
+
+**Maximum**
+
+Let $C$ be a set (arbitrary), $\norm{\cdot}$ be a norm
+
+$$f(x) = \max_{y\in C} \norm{x-y}$$
+
+
+**Minimum**
+
+Assume $C$ convex, 
+
+$$f(x) = \min_{y\in C} \norm{x-y}$$
+
+
+---
+
+## Composition
+
+**Affine**: $f$ convex implies $g(x) = f(Ax + b)$ convex
+
+**General**: $g : \R^n\rightarrow\R$, $h: \R\rightarrow\R$, $f = h\circ g$
+
+Remember chain rule:
+$$f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)$$
+
+$f$ convex if
+* $h$ convex nondecreasing and $g$ convex
+* $h$ convex nonincreasing and $g$ concave
+
+Similar argument for vector composition
+
+

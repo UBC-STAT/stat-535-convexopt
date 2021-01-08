@@ -10,3 +10,4 @@ lecture-slides/*.html
 *.Rproj
 lecture-slides/rmd_gfx
 *.Rhistory
+.Rproj.user
