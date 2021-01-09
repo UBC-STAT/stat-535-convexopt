@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>02 Convex sets and functions</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 02 Convex sets and functions
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-01-08
+
+---
+
+
+
+
+
+## Some history
+
+`$$\newcommand{\E}{\mathbb{E}}
+\newcommand{\Expect}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Var}[1]{\mathbb{V}\left[ #1 \right]}
+\newcommand{\Cov}[2]{\mathrm{Cov}\left[#1,\ #2\right]}
+\newcommand{\given}{\ \vert\ }
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{\mathbb{1}}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}$$`
+
+* Historically, linear problems were the focus 
+
+* Linear vs. non-linear guided the discussion
+
+* The more appropriate distinction is between **convex** and **non-convex**
+
+* Why? Because with "convex problems", local minima are global minima
+
+.center[![:scale 50%](gfx/convex-nonconvex.png)]
+
+---
+
+## Topics today
+
+1. Convex sets and operations preserving them
+2. Convex functions and operations preserving them
+3. Practice
+
+---
+
+## Definitions
+
+Set `\(C\)` is **convex** iff
+`\(\forall x,c \in C, \forall t \in [0; 1]\ \ t x + (1-t) y \in C.\)`
+
+So `\(C\)` is convex iff for any two points in `\(C\)` the segment connecting them is also entirely in `\(C\)`.
+
+.pull-left[
+.center[
+![:scale 30%](https://upload.wikimedia.org/wikipedia/commons/6/6b/Convex_polygon_illustration1.svg)
+]]
+
+.pull-right[.center[
+![:scale 30%](https://upload.wikimedia.org/wikipedia/commons/6/6c/Convex_polygon_illustration2.svg)
+]]
+
+
+**Convex combination** of set of points
+`\(x_1, \ldots, x_k \in \mathbb{R}^n\)` is
+`$$\Set{\sum\limits_{i=1}^{k} \theta_i x_i : \sum\limits_{i=1}^{k} \theta_i=1,\ \forall i\ \theta_i \in [0; 1]}.$$`
+
+**Convex hull** of any `\(C \in \mathbb{R}^n\)`, denoted `\(conv(C)\)` is a union
+of all convex combinations of different elements of `\(C\)`.
+
+---
+
+## Some examples
+
+-   Trivial: Empty set, point, line, segment.
+
+-   Norm ball: `\(\Set{x : \left\lVert x \right\rVert &lt; r}\)`.
+
+-   Hyperplane `\(\Set{x : {a}^\top x = b}\)`, Affine space
+    `\(\Set{x : A x = b}\)`.
+
+-   Hyperspace: `\(\Set{x : {a}^\top x \leq b}\)`, Polyhedron
+    `\(\Set{x : A x \leq b}\)`.
+
+-   Cone such that if `\(x_1, x_2 \in C\)` then
+    `\(t_1 x_1 + t_2 x_2 \in C \ \forall t_1, t_2 \geq 0\)`.
+    
+---
+    
+## Cones
+
+Set `\(C\)` is a **cone** iff
+`\(\forall\)` scalars `\(t \geq 0\)`, `\(x \in C \implies t x \in C\)`.
+
+.center[
+![:scale 20%](https://upload.wikimedia.org/wikipedia/commons/d/d1/Convex_cone_illust.svg)
+]
+
+Type of cones:
+
+* Norm cone: `\(\Set{(x,t) : \left\lVert x \right\rVert \leq t}\)`.
+
+* Normal cone for some `\(C\)` and `\(x \in C\)`: `\(N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}\)`.
+
+* Positive semidefinite cone `\(S_+^n = \Set{X \in S^n : X \succeq 0}\)`,
+`\(S^n\)` is the set of symmetric matrices.
+
+--
+
+Are all cones convex?
+
+---
+
+**Normal cone**:
+
+for some `\(C\)` and `\(x \in C\)`: 
+
+`$$N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}$$`
+
+Always convex, regardless of `\(C\)`
+
+.center[
+![:scale 50%](gfx/normal-cone.png)
+]
+
+---
+    
+## Key properties of convex sets
+
+**Separating hyperplane.**
+
+`\(A, B\)` are convex, nonempty, disjoint sets. 
+
+Then `$$\exists a,b:\ A \subseteq \Set{x : {a}^\top x \leq b},\ \ B \subseteq \Set{x : {a}^\top \geq b}$$`
+
+.pull-left[
+.center[
+![:scale 50%](https://upload.wikimedia.org/wikipedia/commons/9/9b/Separating_axis_theorem2008.png)
+]]
+
+.pull-right[.center[
+![:scale 50%](https://upload.wikimedia.org/wikipedia/commons/9/99/Separating_axis_theorem2.svg)
+]]
+
+
+---
+
+**Supporting hyperplane.** 
+
+
+    
+
+
+.pull-left[
+`\(C\)` nonempty, convex, `\(x_0 \in bd(C)\)`.
+
+.center[
+![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/6/66/Supporting_hyperplane1.svg)
+]]
+
+.pull-right[.center[
+Then `\(\exists a:\ C \subseteq \Set{x : {a}^\top x \leq {a}^\top x_0}\)`
+
+![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/e/ea/Supporting_hyperplane2.svg)
+]]
+
+--
+
+.center[
+![:scale 20%](https://upload.wikimedia.org/wikipedia/commons/3/32/Supporting_hyperplane3.svg)
+]
+
+    
+---
+
+## Operations preserving convexity
+
+-   **Intersection**. `\(A\)` and `\(B\)` convex `\(\Longrightarrow C = A \cap B\)` convex
+
+-   **Scaling, translation**. `\(C\)` is convex `\(\implies a C + b\)` is convex.
+
+-   **Affine image and preimage**. `\(f(x) = A x + b\)`, `\(C\)` is convex
+    `\(\implies f(C), f^{-1}(C)\)` are convex.
+
+-   Lots more, see BV chapter 2.
+
+---
+
+## Example
+
+The perspective function applied to a convex set: `\(f_z: \R^n \rightarrow \R^n\)` where `\(f_z (x) = x/z\)` and `\(z \in \R,\ z&gt;0\)`. 
+
+If `\(C\)` is convex, then `\(D = f_z(C)\)` is.
+
+If `\(D\)` is convex, then `\(C=f_z^{-1}(D)\)` is.
+
+---  
+
+Consider `\(U,V\)` discrete random variables with support `\(\Set{1,\ldots,m}\)` and `\(\Set{1,\ldots,n}\)`.
+
+Let `\(C\)` be a set of joint distributions: `\(\forall p \in C\)`, `\(p_{ij} = P(U=i,\ V=j)\)`, length of `\(p\)` is `\(n\times m\)`, `\(p_{ij} \in [0,1]\)`, `\(\sum p_{ij} = 1\)`.
+
+Let `\(D\)` be the set of conditional distributions: `\(\forall q \in D\)`, `\(q_{ij} = P(U=i\ |\ V=j)\)`.
+
+Assume `\(C\)` is a convex set. Is `\(D\)`?
+
+--
+
+`$$q_{ij} = \frac{p_{ij}}{\sum p } \Rightarrow q=\frac{p}{1^\top p}$$`
+
+This is the perspective function composed with an affine function. So `\(D\)` is convex if `\(C\)` is.
+
+
+
+---
+Exercise:
+
+`\(A_1, \ldots, A_k, B \in \mathbb{S}^n\)` -- symmetric matrices. Then
+`\(C = \Set{x \in \mathbb{R}^k : \sum\limits_{i=1}^{k} x_i A_i \preceq B}\)`.
+
+`\(f: \mathbb{R}^k \to \mathbb{S}^n\)`,
+`\(f(x) = B - \sum\limits_{i=1}^{k} x_i A_i\)`. `\(C = f^{-1}(S_+^n)\)` --
+affine preimage of convex cone.
+
+---
+
+
+## Convex functions
+
+Function `\(f: \mathbb{R}^n\to \mathbb{R}\)` is *convex* iff
+`\(\dom{f} \subseteq \mathbb{R}^n\)` is convex and
+`$$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y)$$`
+
+&lt;img src="rmd_gfx/02-convexity/convex-fun-1.svg" style="display: block; margin: auto;" /&gt;
+
+* `\(f\)` lies "below" the segment joining `\(f(x)\)` and `\(f(y)\)`
+
+* **Concave** is the opposite
+
+.center[
+`\(f\)` concave `\(\Rightarrow\)` `\(-f\)` convex
+]
+
+---
+
+## Modifiers
+
+`\(f\)` is **strictly convex** iff `\(\forall t \in (0,\ 1),\ \forall x \neq y\)`  the inequality is strict.
+
+* `\(f\)` linear, then it is convex (and concave). 
+
+* `\(f\)` strictly convex, then it is "more" convex than a line is
+
+
+`\(f\)` is **strongly convex** with parameter `\(\tau\)` iff `\(f(x) - \frac \tau 2 \left\lVert x \right\rVert_2^2\)` is convex.
+    
+* `\(f\)` is at least as convex as a quadratic
+
+Strong `\(\Rightarrow\)` Strict `\(\Rightarrow\)` Convex
+
+Same for concave
+---
+
+## Examples
+
+-   `\(f(x) = \frac 1 x\)` for `\(x \in (0,\infty)\)` is strictly convex, but not strongly.
+
+-   Univariate functions:
+
+    -   `\(e^{ax}\)` is convex `\(\forall a \in \mathbb{R}\)` over `\(\mathbb{R}\)`.
+
+    -   `\(x^a\)` convex given `\(a \geq 1\)` or `\(a \leq 0\)` over `\(\mathbb{R}_+\)`.
+
+    -   `\(\log x\)` is concave over `\(\mathbb{R}_+\)`.
+
+-   Affine `\({a}^\top x + b\)` is both convex and concave.
+
+-   Quadratic `\(\frac 1 2 {x}^\top Q x + {b}^\top x + c\)` is
+    convex if `\(Q \succeq 0\)`.
+    
+---
+
+-   `\(\left\lVert u - A x \right\rVert_2^2\)` convex since
+    `\({A}^\top A \succeq 0\)`.
+
+-   Norms: all vector norms and most matrix norms (Schatten norms, induced norms) are convex.
+
+- `\(\norm{x}_q\)` `\(0 \leq q &lt; 1\)` is not convex
+
+
+
+-   Indicator function is convex. `\(C\)` is a convex set, then
+    `$$I_C(x) = \begin{cases} 0 &amp; x \in C \\ \infty &amp; \mbox{otherwise} \end{cases}$$`
+
+-   Support function is convex for any set `\(C\)`.
+    `$$I_C^*(x) = \max\limits_{y \in C} {x}^\top y$$`
+
+---
+
+## Key properties
+
+- `\(f\)` is convex iff its restriction to any line is convex
+
+-   `\(f\)` is convex iff its **epigraph** is convex, where
+    `$$\textrm{epi}(f) = \Set{ (x,t) \in \dom{f} \times \R : f(x) \leq t}$$`.
+    
+&lt;img src="rmd_gfx/02-convexity/epigraph-1.svg" style="display: block; margin: auto;" /&gt;
+
+-   `\(f\)` is convex `\(\implies\)` all its sublevel sets are convex.
+    `\(C_t = \Set{x \in \dom{f} : f(x) \leq t}\)`. The converse is false.
+    
+---
+
+The definition `$$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y))$$` is sometimes called **zeroth-order** definition
+
+**First order** characterization: if `\(f\)` is differentiable, then `\(f\)` is convex iff `\(\dom f\)` is convex and
+    `$$\forall x,y \in \dom{f}\ \ f(y) \geq f(x) + \nabla {f(x)}^\top (y-x)$$`
+    
+Essentially, it means that `\(f\)`'s graph lies above any tangent plane.
+    
+Note the implication: if `\(f\)` is differentiable, then `\(\nabla f(x) = 0 \Rightarrow x\)` minimizes `\(f\)`
+
+**Second order** characterization: if `\(f\)` is twice differentiable, then `\(f\)` is convex iff `\(\dom{f}\)` is
+    convex and `$$\forall x \in \dom{f}\ \ \nabla^2 f(x) \succeq 0$$`
+    
+---
+    
+## Operations preserving function convexity
+
+Nonnegative linear combination.
+
+Pointwise maximum. `\(\forall s \in S\ \ f_s\)` is convex
+    `\(\implies f(x) = \max_{s \in S} f_s(x)\)` is also convex.
+
+Partial minimum. If `\(g(x,y)\)` is convex over variables `\(x, y\)` and `\(C\)` is  convex, then `\(f(x) = \min\limits_{y \in C} g(x,y)\)` is also convex. 
+    
+--
+
+Example (distance to a set)
+
+**Maximum**
+
+Let `\(C\)` be a set (arbitrary), `\(\norm{\cdot}\)` be a norm
+
+`$$f(x) = \max_{y\in C} \norm{x-y}$$`
+
+
+**Minimum**
+
+Assume `\(C\)` convex, 
+
+`$$f(x) = \min_{y\in C} \norm{x-y}$$`
+
+
+---
+
+## Composition
+
+**Affine**: `\(f\)` convex implies `\(g(x) = f(Ax + b)\)` convex
+
+**General**: `\(g : \R^n\rightarrow\R\)`, `\(h: \R\rightarrow\R\)`, `\(f = h\circ g\)`
+
+Remember chain rule:
+`$$f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)$$`
+
+`\(f\)` convex if
+* `\(h\)` convex nondecreasing and `\(g\)` convex
+* `\(h\)` convex nonincreasing and `\(g\)` concave
+
+Similar argument for vector composition
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
