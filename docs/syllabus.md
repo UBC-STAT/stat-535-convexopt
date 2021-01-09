@@ -81,15 +81,17 @@ On February 22 (at the beginning of class) there will be an (individual) little 
 
 #### Homework assignments
 
-There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 5/10/15/20 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * .8^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay. Revisions after 1 week will receive no credit.
+There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 0/5/10/15 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * .8^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay. Revisions after 1 week will receive no credit.
 
 Discussing assignments with your classmates is allowed and encouraged, but it is important that every student get practice working on these problems. This means that **all the work you turn in must be your own**. The general policy on homework collaboration is:
 1. You must first make a serious effort to solve the problem.
 1. If you are stuck after doing so, you may ask for help from another student. You may discuss strategies to solve the problem, but you may not look at their code, nor may they spell out the solution to you step-by-step.
-1. Once you have gotten help, you must write your own solution individually. You must disclose, in your GitHub pull request, the names of anyone you got help from.
+1. Once you have gotten help, you must write your own solution individually. You must disclose, in your GitHub pull request, the names of anyone from whom you got help.
 1. This also applies in reverse: if someone approaches you for help, you must not provide it unless they have already attempted to solve the problem, and you may not share your code or spell out the solution step-by-step.
 
-These rules also apply to getting help from other people: friends not in the course, homework help websites, Stack Overflow, and so on.
+These rules also apply to getting help from other people such as friends not in the course (try the problem first, discuss strategies, not step-by-step solutions, acknowledge those from whom you received help). 
+
+You may not use homework help websites, Stack Overflow, and so on under any circumstances.
 
 You can always, of course, ask me for help on Slack. And public Slack **questions** are allowed and encouraged. 
 
