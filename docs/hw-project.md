@@ -1,7 +1,7 @@
 ---
 title: Homework and Project
 layout: page
-icon: "far fa-laptop-house"
+icon: "fas fa-laptop-house"
 ---
 
 
