@@ -39,6 +39,8 @@ navigation:
     url: syllabus/
   - title: Schedule
     url: schedule/
+  - title: HW/Project
+    url: hw-project/
   - title: FAQ
     url: faq/
   - title: Github

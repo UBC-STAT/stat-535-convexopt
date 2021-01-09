@@ -65,8 +65,8 @@ Lectures and homeworks will focus on both mathematical understanding and coding 
 
 In-class activities, max 20 points  
 Little quiz, 10 points  
-2 Homework assignments, 35 points total  
-Project, 30 points (+ 5 bonus in rare cases)
+2 Homework assignments, 30 points total  
+Project, 35 points (+ 5 bonus in rare cases)
 Professionalism, +/- 5 points
 
 The maximum score is 95 unless you achieve the bonus or display excellent professionalism. Excellent professionalism means going above and beyond in terms of in-class participation and contributions on the discussion board. Regularly responding to fellow students is a step toward the bonus. Bonus points are rare and will be reserved for excellence. Most students will receive a 0 for their processionalism score. Failing to participate in class, regularly skipping class, leaving your project team out to dry, will result in reduced scores. This should also be rare

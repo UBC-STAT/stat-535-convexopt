@@ -25,3 +25,15 @@ icon: "far fa-calendar-alt"
 |22 Feb | CVX opt | little quiz | 
 |24 Feb | Project presentations |  | P2 due |
 {: .table .table-striped}
+
+
+## Homework
+
+For each homework assignment, you will have an individual repo. The README file
+has instructions. Please be sure you read the section of the 
+[syllabus about collaboration](syllabus)
+
+## Project
+
+More information will be posted here shortly. Prior to the due date for
+Checkpoint 1, be sure to notify me of your team so
