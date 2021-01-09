@@ -1,7 +1,7 @@
 ---
 title: Homework and Project
 layout: page
-icon: "fas fa-laptop-house"
+icon: "fas fa-tractor"
 ---
 
 
