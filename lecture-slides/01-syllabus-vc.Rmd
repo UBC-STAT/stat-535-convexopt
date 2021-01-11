@@ -469,7 +469,6 @@ git add .
 
 **Project**
 * Each team gets a repo.
-* The `submission` branch is yours.
 * Make other branches as you wish to divide up work
 * When ready to submit, make a PR against `master`
 
