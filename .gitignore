@@ -11,3 +11,4 @@ lecture-slides/*.html
 lecture-slides/rmd_gfx
 *.Rhistory
 .Rproj.user
+lecture-slides/drafts/

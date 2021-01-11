@@ -236,13 +236,13 @@ class: middle, inverse, center
 .pull-right[
 **Individual homework (x2)**
 
-* 20 points each
+* 15 points each
 
 * 1 week to revise for 80% 
 
 **Group project (your choice)**
 
-* 25 points (5/15/5)
+* 35 points (5/25/5)
 
 * presentation on last day
 ]
