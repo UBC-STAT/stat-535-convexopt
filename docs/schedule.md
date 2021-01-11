@@ -15,11 +15,11 @@ icon: "far fa-calendar-alt"
 |18 Jan | Basics and standard problems | transforming problems |
 |20 Jan | GD and subgradients | Ridge regression w/ GD | P1 due |
 |25 Jan | Prox GD and SGD | ISTA |
-|27 Jan | Duality | find the dual |  HW 1 due (1/31 @ 11:59pm)
+|27 Jan | Duality | find the dual |  HW 1 due (1/31 @ 23:59)
 |01 Feb | KKT conditions |      | |
 |03 Feb | ADMM and CD | Lasso exercise |
 |08 Feb | Strong rules and paths | Path for lasso |
-|10 Feb | Newton's method | Newton vs GD | HW 2 due (2/15 @ 11:59pm)
+|10 Feb | Newton's method | Newton vs GD | HW 2 due (2/15 @ 23:59)
 |15 Feb | NO CLASS |
 |17 Feb | NO CLASS |
 |22 Feb | CVX opt | little quiz | 
