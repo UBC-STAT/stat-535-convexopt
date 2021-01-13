@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 # 02 Convex sets and functions
 ### STAT 535A
 ### Daniel J. McDonald
-### Last modified - 2021-01-08
+### Last modified - 2021-01-12
 
 ---
 
@@ -60,7 +60,9 @@ class: center, middle, inverse, title-slide
 ## Topics today
 
 1. Convex sets and operations preserving them
+
 2. Convex functions and operations preserving them
+
 3. Practice
 
 ---
@@ -68,7 +70,7 @@ class: center, middle, inverse, title-slide
 ## Definitions
 
 Set `\(C\)` is **convex** iff
-`\(\forall x,c \in C, \forall t \in [0; 1]\ \ t x + (1-t) y \in C.\)`
+`\(\forall \ x,y \ \in C, \forall t \in [0,\ 1]\ \ t x + (1-t) y \in C.\)`
 
 So `\(C\)` is convex iff for any two points in `\(C\)` the segment connecting them is also entirely in `\(C\)`.
 
@@ -84,7 +86,7 @@ So `\(C\)` is convex iff for any two points in `\(C\)` the segment connecting th
 
 **Convex combination** of set of points
 `\(x_1, \ldots, x_k \in \mathbb{R}^n\)` is
-`$$\Set{\sum\limits_{i=1}^{k} \theta_i x_i : \sum\limits_{i=1}^{k} \theta_i=1,\ \forall i\ \theta_i \in [0; 1]}.$$`
+`$$\Set{\sum\limits_{i=1}^{k} \theta_i x_i : \sum\limits_{i=1}^{k} \theta_i=1,\ \forall i\ \theta_i \in [0,\ 1]}.$$`
 
 **Convex hull** of any `\(C \in \mathbb{R}^n\)`, denoted `\(conv(C)\)` is a union
 of all convex combinations of different elements of `\(C\)`.
@@ -104,7 +106,7 @@ of all convex combinations of different elements of `\(C\)`.
     `\(\Set{x : A x \leq b}\)`.
 
 -   Cone such that if `\(x_1, x_2 \in C\)` then
-    `\(t_1 x_1 + t_2 x_2 \in C \ \forall t_1, t_2 \geq 0\)`.
+    `\(t_1 x_1 + t_2 x_2 \in C \ \forall \ t_1, t_2 \geq 0\)`.
     
 ---
     
@@ -119,12 +121,12 @@ Set `\(C\)` is a **cone** iff
 
 Type of cones:
 
-* Norm cone: `\(\Set{(x,t) : \left\lVert x \right\rVert \leq t}\)`.
+* Norm cone: `\(\Set{(x,a),\ x \in R^p,\ a \geq 0: \left\lVert x \right\rVert \leq t}\)`.
 
-* Normal cone for some `\(C\)` and `\(x \in C\)`: `\(N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall y \in C}\)`.
+* Normal cone for some `\(C\)` and `\(x \in C\)`: `\(N_C(x) = \Set{g : {g}^\top x \geq {g}^\top y \ \forall \ y \in C}\)`.
 
-* Positive semidefinite cone `\(S_+^n = \Set{X \in S^n : X \succeq 0}\)`,
-`\(S^n\)` is the set of symmetric matrices.
+* Positive semidefinite cone `\(\mathcal{S}_+^n = \Set{X \in \mathcal{S}^n : X \succeq 0}\)`,
+`\(\mathcal{S}^n\)` is the set of symmetric matrices.
 
 --
 
@@ -201,7 +203,7 @@ Then `\(\exists a:\ C \subseteq \Set{x : {a}^\top x \leq {a}^\top x_0}\)`
 -   **Scaling, translation**. `\(C\)` is convex `\(\implies a C + b\)` is convex.
 
 -   **Affine image and preimage**. `\(f(x) = A x + b\)`, `\(C\)` is convex
-    `\(\implies f(C), f^{-1}(C)\)` are convex.
+    `\(\implies f(C),\ f^{-1}(C)\)` are convex.
 
 -   Lots more, see BV chapter 2.
 
@@ -219,7 +221,10 @@ If `\(D\)` is convex, then `\(C=f_z^{-1}(D)\)` is.
 
 Consider `\(U,V\)` discrete random variables with support `\(\Set{1,\ldots,m}\)` and `\(\Set{1,\ldots,n}\)`.
 
-Let `\(C\)` be a set of joint distributions: `\(\forall p \in C\)`, `\(p_{ij} = P(U=i,\ V=j)\)`, length of `\(p\)` is `\(n\times m\)`, `\(p_{ij} \in [0,1]\)`, `\(\sum p_{ij} = 1\)`.
+Let `\(C\)` be a set of joint distributions:  
+* `\(\forall p \in C\)`, `\(p_{ij} = P(U=i,\ V=j)\)`,  
+* length of `\(p\)` is `\(n\times m\)`,  
+* `\(p_{ij} \in [0,1]\)`, `\(\sum p_{ij} = 1\)`.
 
 Let `\(D\)` be the set of conditional distributions: `\(\forall q \in D\)`, `\(q_{ij} = P(U=i\ |\ V=j)\)`.
 
@@ -227,7 +232,7 @@ Assume `\(C\)` is a convex set. Is `\(D\)`?
 
 --
 
-`$$q_{ij} = \frac{p_{ij}}{\sum p } \Rightarrow q=\frac{p}{1^\top p}$$`
+`$$q_{ij} = \frac{p_{ij}}{\sum_{k=1}^n p_{kj} } \Rightarrow q=\frac{p}{a^\top p}$$`
 
 This is the perspective function composed with an affine function. So `\(D\)` is convex if `\(C\)` is.
 
@@ -238,9 +243,9 @@ This is the perspective function composed with an affine function. So `\(D\)` is
 
 ## Convex functions
 
-Function `\(f: \mathbb{R}^n\to \mathbb{R}\)` is *convex* iff
+Function `\(f: \mathbb{R}^n\to \mathbb{R}\)` is **convex** iff
 `\(\dom{f} \subseteq \mathbb{R}^n\)` is convex and
-`$$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y)$$`
+`$$\forall x,y \in \dom{f}, t \in [0,\ 1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y)$$`
 
 &lt;img src="rmd_gfx/02-convexity/convex-fun-1.svg" style="display: block; margin: auto;" /&gt;
 
@@ -322,7 +327,7 @@ Same for concave
     
 ---
 
-The definition `$$\forall x,y \in \dom{f}, t \in [0;1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y))$$` is sometimes called **zeroth-order** definition
+The definition `$$\forall x,y \in \dom{f}, t \in [0,\ 1] \ \ \ f(t x + (1-t) y) \leq t f(x) + (1-t) f(y))$$` is sometimes called **zeroth-order** definition
 
 **First order** characterization: if `\(f\)` is differentiable, then `\(f\)` is convex iff `\(\dom f\)` is convex and
     `$$\forall x,y \in \dom{f}\ \ f(y) \geq f(x) + \nabla {f(x)}^\top (y-x)$$`
