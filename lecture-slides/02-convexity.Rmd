@@ -390,3 +390,16 @@ $f$ convex if
 Similar argument for vector composition
 
 
+---
+
+## Wrap up
+
+* Convexity means local==global, it's good
+
+* Convex sets: $x,y \in C \Rightarrow tx + (1-t)y \in C$
+
+* Convex functions: domain convex and "function lies below a line"
+
+* 0th/1st/2nd-order characterizations
+
+* Various ways common operations retain convexity (affine transforms, maximum, minimum, etc.)

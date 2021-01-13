@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>03 Basics and standard problems</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 03 Basics and standard problems
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-01-13
+
+---
+
+
+
+
+## Last time
+
+* Convexity means local == global, it's good
+
+.center[![:scale 40%](gfx/convex-nonconvex.png)]
+
+* Convex sets: `\(x,y \in C \Rightarrow tx + (1-t)y \in C\)`
+
+* Convex functions: domain convex and "function lies below a line"
+
+* 0th/1st/2nd-order characterizations
+
+* Various ways common operations retain convexity (affine transforms, maximum, minimum, etc.)
+
+---
+
+## Today
+
+1. Optimization terminology
+
+2. Properties and first order optimality
+
+3. Equivalent transformations
+
+4. Standard problems
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+---
+
+## Optimization problem
+
+A convex optimization problem (program) 
+$$
+`\begin{aligned}
+\min\limits_{x \in D} &amp;\quad f(x) \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+&amp;\quad A x = b 
+\end{aligned}`
+$$
+where `\(f, g_i\)` are convex and `\(D = \dom{f} \cap \dom{g_i}\)`.
+
+---
+
+## Terms
+
+$$
+`\begin{aligned}
+\min\limits_{x \in D} &amp;\quad f(x) \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+&amp;\quad A x = b 
+\end{aligned}`
+$$
+
+-   `\(f\)` -- criterion or objective function.
+
+-   `\(g_i\)` -- inequality constraints.
+
+-   `\(x\)` is a **feasible point** if it satisfies the conditions, namely
+    `\(x \in D\)`, `\(g_i(x) \leq 0\)`, and `\(A x = b\)`.
+
+-   `\(\min f\)` over feasible points points -- **optimal value** `\(f^*\)`.
+
+---
+
+$$
+`\begin{aligned}
+\min\limits_{x \in D} &amp;\quad f(x) \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+&amp;\quad A x = b 
+\end{aligned}`
+$$
+
+-   If `\(x\)` is feasible and `\(f(x) = f^*\)` then `\(x\)` is an **optimum**
+    (solution, minimizer).
+
+-   Feasible `\(x\)` is a **local optimum** if `\(\exists R &gt; 0\)` such that
+    `\(\forall y \in B_R(x)\ \ f(x) \leq f(y)\)`.
+
+-   If `\(x\)` is feasible and `\(f(x) \leq f^* + \varepsilon\)` then `\(x\)` is
+    `\(\varepsilon\)`-suboptimal.
+
+-   If `\(x\)` is feasible and `\(g_k(x) = 0\)` then `\(g_k\)` is **active** at `\(x\)`
+    (otherwise inactive).
+    
+--
+    
+$$
+`\begin{aligned}
+\max_{x \in D} &amp;\quad -f(x)\\
+\text{subject to} &amp;\quad g_i(x) \leq 0  &amp; \forall i \in [1:m] \\
+&amp;\quad A x = b
+\end{aligned}`
+$$
+
+
+---
+
+## Properties
+
+-   Solution set `\(X_{opt}\)` is convex, (this is the set of all solutions)
+
+Proof: By the definition.
+
+
+-   If `\(f\)` is strictly convex then the solution is unique.
+
+-   For convex optimization problems all local optima are global.
+
+-   The set of feasible points is convex.
+
+---
+
+## Example: Lasso. 
+
+`\(\min\limits_\beta \left\lVert y - X \beta \right\rVert_2^2\)`
+subject to `\(\left\lVert \beta \right\rVert_1 \leq s\)`.
+
+-   `\(g_1(\beta) = \left\lVert \beta \right\rVert_1 - s\)` -- convex, no
+    equality constraints.
+
+-   `\(X\)` is `\(n \times p\)` matrix
+
+    -   If `\(n \geq p\)` and `\(X\)` is full rank then
+        `\(\nabla^2 f(\cdot) = 2 {X}^\mathsf{T} X\)` is positive definite
+        matrix. The function is strictly convex, therefore the solution
+        is unique.
+
+    -   If `\(p &gt; n\)` then `\(\exists \beta \neq 0\)` such that `\(X \beta = 0\)`
+        `\(\implies\)` there may be multiple solutions.
+        
+---
+        
+
+## First Order Condition 
+
+-   convex problem with differentiable `\(f\)`
+
+-   a feasible `\(x\)` is optimal iff `\(\nabla f(x)^{T}( x - y) \ge 0\)`,
+    `\(\forall\)` feasible `\(y\)`
+
+-   if unconstrained, the condition reduces to `\(\nabla f(x)  = 0\)`
+
+`$$\min\limits_x \frac{1}{2}x^{T}Q x + b^{T}x + c, \quad\quad Q \succeq 0$$`
+- FOC: `\(\nabla f(x) = Q^{T}x + b = 0\)`\
+- if `\(Q \succ 0\)` `\(\rightarrow\)` `\(x^{*} = -Q^{-1}b\)`\
+- if `\(Q\)` singular, `\(b \notin Col[Q] \rightarrow\)` no solution\
+- if `\(Q\)` singular, `\(b \in Col[Q] \rightarrow\)` `\(x^{*} = -Q^{*}b + z\)` with `\(z \in null[Q]\)`
+
+---
+class: center, inverse, middle
+
+# Useful operations
+
+---
+
+## Partial optimization
+
+Recall: `\(h(x) = \min\limits_{y\in C}f(x,y)\)` is convex if `\(f\)` is convex, and `\(C\)` is
+convex.
+
+
+$$
+`\begin{aligned}
+\min\limits_{x_{1},x_{2}} &amp;\quad f(x_{1},x_{2}) &amp;&amp;\min\limits_{x_{1}}&amp;\quad \tilde{f}(x_{1})\\
+\textrm{s.t.}&amp;\quad g_{1}(x_{1}) \le 0 &amp;\Longleftrightarrow &amp;\textrm{s.t.}&amp;\quad 
+g_{1}(x_{1}) &amp;\le 0\\
+&amp;\quad g_2(x_2) \le 0
+\end{aligned}`
+$$
+
+where `\(\tilde{f}(x_1) = \min\Set{f(x_1,x_2): g_2(x_2)\le 0}\)`.
+
+- The right problem is convex if the left is (and vice versa)
+
+---
+
+## Transformations
+
+- We can use a monotone increasing transformation
+`\(h: \mathbb{R} \rightarrow \mathbb{R}\)`:\
+`$$\quad \min\limits_{x\in C} f(x) \Rightarrow \min\limits_{x\in C} h(f(x))$$`\
+- We can use a change of variable transformation
+`\(\phi : \mathbb{R}^{n} \Rightarrow \mathbb{R}^{m}\)` :\
+`$$\quad \min\limits_{x \in C} f(x) \Leftrightarrow \min\limits_{\phi(y) \in C} f(\phi(y))$$`
+
+---
+
+__Example:__ Geometric Program
+
+`$$\min\limits_{x \in C} f(x) = \sum\limits_{k=1}^{p}\gamma_{k}x_{1}^{a_{k_1}}x_{2}^{a_{k_{2}}} ..x_{n}^{a_{k_{n}}}\quad\quad
+\textrm{(posynomial)}$$`
+
+- `\(C\)` : involves (convex) inequalities in some form and equalities are affine.\
+- We can change above non-convex problem to the following convex problem
+by letting `\(y_{i} = \log x_{i}\)` 
+
+---
+
+## Eliminate equality constraints
+
+$$
+`\begin{aligned}
+\min\limits_{x}&amp;\quad f(x) \\
+\textrm{s.t.} &amp;\quad g_{i}(x) \le  0\\ &amp;\quad Ax = b
+\end{aligned}`
+$$
+
+- `\(x\)` feasible means `\(\exists M : col[M]= null[A]\)` and `\(x_0 \st Ax_{0} = b\)` 
+- Let `\(x=My + x_{0}\)`
+
+Then the following is an equivalent problem:
+
+$$
+`\begin{aligned}
+\min\limits_{y}&amp;\quad f(My+x_0) \\
+\textrm{s.t.} &amp;\quad g_{i}(My+x_0) \le  0
+\end{aligned}`
+$$
+
+---
+
+## Introduce slack variables
+
+$$
+`\begin{aligned}
+\min\limits_{x}&amp;\quad f(x) \\
+\textrm{s.t.} &amp;\quad g_{i}(x) \leq  0\\ &amp;\quad Ax = b
+\end{aligned}`
+$$
+
+- Can add equality constraints:
+
+$$
+`\begin{aligned}
+\min\limits_{x,s}&amp;\quad f(x) \\
+\textrm{s.t.} &amp;\quad g_{i}(x) + s_i =  0\\
+&amp;\quad s_i \geq 0\\
+&amp;\quad Ax = b
+\end{aligned}`
+$$
+
+- But this is nonconvex unless `\(g_i\)` are affine
+
+__Relaxation__
+
+We can relax nonaffine
+constraints 
+`$$\min\limits_{x \in C} f(x) \Rightarrow \min\limits_{x \in \tilde{C} } f(x)$$`
+with `\(C \subset \tilde{C}\)`\
+
+- In this case optimum of new problem is smaller or equal to the optimum
+of the original problem.
+
+---
+class: middle, inverse, center
+
+# Standard problems 
+
+---
+
+## LP (Linear Programs) 
+
+`$$\min_{x} c^{T}x$$` with affine constraints
+
+- Basis Pursuit (not an LP)
+`\(\qquad \min\limits_{\beta} \| \beta \|_0\)` s.t. `\(X \beta = y\)`\
+- Above problem can be relaxed to :\
+`\(\qquad \min\limits_{\beta} \| \beta \|_{1}\)` s.t. `\(X \beta = y\)`.\
+- This relaxation can be reformulated to a LP problem:\
+`\(\qquad \min\limits_{\beta, z} 1^{T}z\)` s.t.
+`\(z \ge \beta, z \ge -\beta, X\beta = y\)`
+- Dantzig selector\
+`\(\qquad \min\limits_{\beta} \| \beta \|_{1}\)` s.t.
+`\(\|X^{\top}(y - X\beta)\|_{\infty} \le \lambda\)`
+
+---
+
+## QP (Quadratic program)
+
+Lasso, ridge regression, OLS, Portfolio Optimization
+
+---
+
+## SDP (Semi-Definite program)
+
+$$
+`\begin{aligned}
+\min\limits_{X \in S_{n}} &amp;\quad \tr(C^{T}X)\\
+\textrm{s.t.}&amp;\quad \tr{A_{i}^{\top} X} = b_{i}\\
+&amp;\quad X \succeq 0
+\end{aligned}`
+$$
+
+---
+
+## Conic program
+
+$$
+`\begin{aligned}
+\min\limits_{x} &amp;\quad c^\top x\\
+\textrm{s.t.}&amp;\quad Ax=b\\
+&amp;\quad D(x) + d \in K
+\end{aligned}`
+$$
+
+
+`\(D\)` a linear mapping, `\(K\)` a closed convex cone.
+
+- Very similar to an LP
+
+---
+
+## Relations
+
+`\(LP \subset QP \subset SOCP \subset SDP \subset CP(Conic Programming)\)`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

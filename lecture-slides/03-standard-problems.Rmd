@@ -1,0 +1,340 @@
+---
+title: "03 Basics and standard problems"
+author: 
+  - "STAT 535A"
+  - "Daniel J. McDonald"
+date: 'Last modified - `r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+source("rmd_config.R")
+```
+
+## Last time
+
+* Convexity means local == global, it's good
+
+.center[![:scale 40%](gfx/convex-nonconvex.png)]
+
+* Convex sets: $x,y \in C \Rightarrow tx + (1-t)y \in C$
+
+* Convex functions: domain convex and "function lies below a line"
+
+* 0th/1st/2nd-order characterizations
+
+* Various ways common operations retain convexity (affine transforms, maximum, minimum, etc.)
+
+---
+
+## Today
+
+1. Optimization terminology
+
+2. Properties and first order optimality
+
+3. Equivalent transformations
+
+4. Standard problems
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+---
+
+## Optimization problem
+
+A convex optimization problem (program) 
+$$
+\begin{aligned}
+\min\limits_{x \in D} &\quad f(x) \\
+\text{subject to} &\quad g_i(x) \leq 0 & \forall i \in [1:m] \\
+&\quad A x = b 
+\end{aligned}
+$$
+where $f, g_i$ are convex and $D = \dom{f} \cap \dom{g_i}$.
+
+---
+
+## Terms
+
+$$
+\begin{aligned}
+\min\limits_{x \in D} &\quad f(x) \\
+\text{subject to} &\quad g_i(x) \leq 0 & \forall i \in [1:m] \\
+&\quad A x = b 
+\end{aligned}
+$$
+
+-   $f$ -- criterion or objective function.
+
+-   $g_i$ -- inequality constraints.
+
+-   $x$ is a **feasible point** if it satisfies the conditions, namely
+    $x \in D$, $g_i(x) \leq 0$, and $A x = b$.
+
+-   $\min f$ over feasible points points -- **optimal value** $f^*$.
+
+---
+
+$$
+\begin{aligned}
+\min\limits_{x \in D} &\quad f(x) \\
+\text{subject to} &\quad g_i(x) \leq 0 & \forall i \in [1:m] \\
+&\quad A x = b 
+\end{aligned}
+$$
+
+-   If $x$ is feasible and $f(x) = f^*$ then $x$ is an **optimum**
+    (solution, minimizer).
+
+-   Feasible $x$ is a **local optimum** if $\exists R > 0$ such that
+    $\forall y \in B_R(x)\ \ f(x) \leq f(y)$.
+
+-   If $x$ is feasible and $f(x) \leq f^* + \varepsilon$ then $x$ is
+    $\varepsilon$-suboptimal.
+
+-   If $x$ is feasible and $g_k(x) = 0$ then $g_k$ is **active** at $x$
+    (otherwise inactive).
+    
+--
+    
+$$
+\begin{aligned}
+\max_{x \in D} &\quad -f(x)\\
+\text{subject to} &\quad g_i(x) \leq 0  & \forall i \in [1:m] \\
+&\quad A x = b
+\end{aligned}
+$$
+
+
+---
+
+## Properties
+
+-   Solution set $X_{opt}$ is convex, (this is the set of all solutions)
+
+Proof: By the definition.
+
+
+-   If $f$ is strictly convex then the solution is unique.
+
+-   For convex optimization problems all local optima are global.
+
+-   The set of feasible points is convex.
+
+---
+
+## Example: Lasso. 
+
+$\min\limits_\beta \left\lVert y - X \beta \right\rVert_2^2$
+subject to $\left\lVert \beta \right\rVert_1 \leq s$.
+
+-   $g_1(\beta) = \left\lVert \beta \right\rVert_1 - s$ -- convex, no
+    equality constraints.
+
+-   $X$ is $n \times p$ matrix
+
+    -   If $n \geq p$ and $X$ is full rank then
+        $\nabla^2 f(\cdot) = 2 {X}^\mathsf{T} X$ is positive definite
+        matrix. The function is strictly convex, therefore the solution
+        is unique.
+
+    -   If $p > n$ then $\exists \beta \neq 0$ such that $X \beta = 0$
+        $\implies$ there may be multiple solutions.
+        
+---
+        
+
+## First Order Condition 
+
+-   convex problem with differentiable $f$
+
+-   a feasible $x$ is optimal iff $\nabla f(x)^{T}( x - y) \ge 0$,
+    $\forall$ feasible $y$
+
+-   if unconstrained, the condition reduces to $\nabla f(x)  = 0$
+
+$$\min\limits_x \frac{1}{2}x^{T}Q x + b^{T}x + c, \quad\quad Q \succeq 0$$
+- FOC: $\nabla f(x) = Q^{T}x + b = 0$\
+- if $Q \succ 0$ $\rightarrow$ $x^{*} = -Q^{-1}b$\
+- if $Q$ singular, $b \notin Col[Q] \rightarrow$ no solution\
+- if $Q$ singular, $b \in Col[Q] \rightarrow$ $x^{*} = -Q^{*}b + z$ with $z \in null[Q]$
+
+---
+class: center, inverse, middle
+
+# Useful operations
+
+---
+
+## Partial optimization
+
+Recall: $h(x) = \min\limits_{y\in C}f(x,y)$ is convex if $f$ is convex, and $C$ is
+convex.
+
+
+$$
+\begin{aligned}
+\min\limits_{x_{1},x_{2}} &\quad f(x_{1},x_{2}) &&\min\limits_{x_{1}}&\quad \tilde{f}(x_{1})\\
+\textrm{s.t.}&\quad g_{1}(x_{1}) \le 0 &\Longleftrightarrow &\textrm{s.t.}&\quad 
+g_{1}(x_{1}) &\le 0\\
+&\quad g_2(x_2) \le 0
+\end{aligned}
+$$
+
+where $\tilde{f}(x_1) = \min\Set{f(x_1,x_2): g_2(x_2)\le 0}$.
+
+- The right problem is convex if the left is (and vice versa)
+
+---
+
+## Transformations
+
+- We can use a monotone increasing transformation
+$h: \mathbb{R} \rightarrow \mathbb{R}$:\
+$$\quad \min\limits_{x\in C} f(x) \Rightarrow \min\limits_{x\in C} h(f(x))$$\
+- We can use a change of variable transformation
+$\phi : \mathbb{R}^{n} \Rightarrow \mathbb{R}^{m}$ :\
+$$\quad \min\limits_{x \in C} f(x) \Leftrightarrow \min\limits_{\phi(y) \in C} f(\phi(y))$$
+
+---
+
+__Example:__ Geometric Program
+
+$$\min\limits_{x \in C} f(x) = \sum\limits_{k=1}^{p}\gamma_{k}x_{1}^{a_{k_1}}x_{2}^{a_{k_{2}}} ..x_{n}^{a_{k_{n}}}\quad\quad
+\textrm{(posynomial)}$$
+
+- $C$ : involves (convex) inequalities in some form and equalities are affine.\
+- We can change above non-convex problem to the following convex problem
+by letting $y_{i} = \log x_{i}$ 
+
+---
+
+## Eliminate equality constraints
+
+$$
+\begin{aligned}
+\min\limits_{x}&\quad f(x) \\
+\textrm{s.t.} &\quad g_{i}(x) \le  0\\ &\quad Ax = b
+\end{aligned}
+$$
+
+- $x$ feasible means $\exists M : col[M]= null[A]$ and $x_0 \st Ax_{0} = b$ 
+- Let $x=My + x_{0}$
+
+Then the following is an equivalent problem:
+
+$$
+\begin{aligned}
+\min\limits_{y}&\quad f(My+x_0) \\
+\textrm{s.t.} &\quad g_{i}(My+x_0) \le  0
+\end{aligned}
+$$
+
+---
+
+## Introduce slack variables
+
+$$
+\begin{aligned}
+\min\limits_{x}&\quad f(x) \\
+\textrm{s.t.} &\quad g_{i}(x) \leq  0\\ &\quad Ax = b
+\end{aligned}
+$$
+
+- Can add equality constraints:
+
+$$
+\begin{aligned}
+\min\limits_{x,s}&\quad f(x) \\
+\textrm{s.t.} &\quad g_{i}(x) + s_i =  0\\
+&\quad s_i \geq 0\\
+&\quad Ax = b
+\end{aligned}
+$$
+
+- But this is nonconvex unless $g_i$ are affine
+
+__Relaxation__
+
+We can relax nonaffine
+constraints 
+$$\min\limits_{x \in C} f(x) \Rightarrow \min\limits_{x \in \tilde{C} } f(x)$$
+with $C \subset \tilde{C}$\
+
+- In this case optimum of new problem is smaller or equal to the optimum
+of the original problem.
+
+---
+class: middle, inverse, center
+
+# Standard problems 
+
+---
+
+## LP (Linear Programs) 
+
+$$\min_{x} c^{T}x$$ with affine constraints
+
+- Basis Pursuit (not an LP)
+$\qquad \min\limits_{\beta} \| \beta \|_0$ s.t. $X \beta = y$\
+- Above problem can be relaxed to :\
+$\qquad \min\limits_{\beta} \| \beta \|_{1}$ s.t. $X \beta = y$.\
+- This relaxation can be reformulated to a LP problem:\
+$\qquad \min\limits_{\beta, z} 1^{T}z$ s.t.
+$z \ge \beta, z \ge -\beta, X\beta = y$
+- Dantzig selector\
+$\qquad \min\limits_{\beta} \| \beta \|_{1}$ s.t.
+$\|X^{\top}(y - X\beta)\|_{\infty} \le \lambda$
+
+---
+
+## QP (Quadratic program)
+
+Lasso, ridge regression, OLS, Portfolio Optimization
+
+---
+
+## SDP (Semi-Definite program)
+
+$$
+\begin{aligned}
+\min\limits_{X \in S_{n}} &\quad \tr(C^{T}X)\\
+\textrm{s.t.}&\quad \tr{A_{i}^{\top} X} = b_{i}\\
+&\quad X \succeq 0
+\end{aligned}
+$$
+
+---
+
+## Conic program
+
+$$
+\begin{aligned}
+\min\limits_{x} &\quad c^\top x\\
+\textrm{s.t.}&\quad Ax=b\\
+&\quad D(x) + d \in K
+\end{aligned}
+$$
+
+
+$D$ a linear mapping, $K$ a closed convex cone.
+
+- Very similar to an LP
+
+---
+
+## Relations
+
+$LP \subset QP \subset SOCP \subset SDP \subset CP(Conic Programming)$
+
