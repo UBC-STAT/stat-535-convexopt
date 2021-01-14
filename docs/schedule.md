@@ -12,7 +12,7 @@ icon: "far fa-calendar-alt"
 |:---------|:----------------|:------------|:-------------|
 |11 Jan  | [Syllabus, git and Github](slides/01-syllabus-vc.html) |  [Github exercise](https://learning.github.ubc.ca/STAT-535A-201-2020W/gh-activity) | 
 |13 Jan | [Convex sets and functions](slides/02-convexity.html) | [convexity exercise](https://learning.github.ubc.ca/STAT-535A-201-2020W/convexity-exercises) |
-|18 Jan | Basics and standard problems | transforming problems |
+|18 Jan | [Basics and standard problems](slides/03-standard-problems.html) | transforming problems |
 |20 Jan | GD and subgradients | Ridge regression w/ GD | P1 due |
 |25 Jan | Prox GD and SGD | ISTA |
 |27 Jan | Duality | find the dual |  HW 1 due (1/31 @ 23:59)

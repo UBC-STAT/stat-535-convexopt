@@ -70,7 +70,7 @@ A convex optimization problem (program)
 $$
 `\begin{aligned}
 \min\limits_{x \in D} &amp;\quad f(x) \\
-\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in 1,\ldots, m \\
 &amp;\quad A x = b 
 \end{aligned}`
 $$
@@ -83,7 +83,7 @@ where `\(f, g_i\)` are convex and `\(D = \dom{f} \cap \dom{g_i}\)`.
 $$
 `\begin{aligned}
 \min\limits_{x \in D} &amp;\quad f(x) \\
-\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in 1,\ldots,m \\
 &amp;\quad A x = b 
 \end{aligned}`
 $$
@@ -95,7 +95,7 @@ $$
 -   `\(x\)` is a **feasible point** if it satisfies the conditions, namely
     `\(x \in D\)`, `\(g_i(x) \leq 0\)`, and `\(A x = b\)`.
 
--   `\(\min f\)` over feasible points points -- **optimal value** `\(f^*\)`.
+-   `\(\min f\)` over feasible points -- **optimal value** `\(f^*\)`.
 
 ---
 
@@ -120,30 +120,43 @@ $$
     (otherwise inactive).
     
 --
-    
+
 $$
 `\begin{aligned}
 \max_{x \in D} &amp;\quad -f(x)\\
-\text{subject to} &amp;\quad g_i(x) \leq 0  &amp; \forall i \in [1:m] \\
+\text{subject to} &amp;\quad g_i(x) \leq 0  &amp; \forall i \in 1,\ldots,m \\
 &amp;\quad A x = b
 \end{aligned}`
 $$
 
 
+Maximization is equivalent
+
+Refer to the minimization as **standard form**
+
 ---
 
 ## Properties
 
--   Solution set `\(X_{opt}\)` is convex, (this is the set of all solutions)
+1. The set of feasible points is convex.
+
+2. Solution set `\(X_{opt}\)` is convex, (this is the set of all solutions)
 
 Proof: By the definition.
 
+--
+
+Suppose `\(x,y \in X_{opt} \subseteq X_{feasible}\)`
+
+1. `\(A(tx+(1-t)y) = tAx + (1-t)Ay = tb + (1-t)b = b\)`
+2. `\(g(tx+(1-t)y) \leq tg(x) + (1-t)g(y) \leq 0\)`
+3. `\(f(tx+(1-t)y) \leq tf(x) + (1-t)f(y) = f^*\)`
+
+--
 
 -   If `\(f\)` is strictly convex then the solution is unique.
 
 -   For convex optimization problems all local optima are global.
-
--   The set of feasible points is convex.
 
 ---
 
@@ -178,15 +191,37 @@ subject to `\(\left\lVert \beta \right\rVert_1 \leq s\)`.
 -   if unconstrained, the condition reduces to `\(\nabla f(x)  = 0\)`
 
 `$$\min\limits_x \frac{1}{2}x^{T}Q x + b^{T}x + c, \quad\quad Q \succeq 0$$`
-- FOC: `\(\nabla f(x) = Q^{T}x + b = 0\)`\
-- if `\(Q \succ 0\)` `\(\rightarrow\)` `\(x^{*} = -Q^{-1}b\)`\
-- if `\(Q\)` singular, `\(b \notin Col[Q] \rightarrow\)` no solution\
-- if `\(Q\)` singular, `\(b \in Col[Q] \rightarrow\)` `\(x^{*} = -Q^{*}b + z\)` with `\(z \in null[Q]\)`
+- FOC: `\(\nabla f(x) = Q^{T}x + b = 0\)`
+- if `\(Q \succ 0\)` `\(\rightarrow\)` `\(x^{*} = -Q^{-1}b\)`
+- if `\(Q\)` singular, `\(b \notin Col[Q] \rightarrow\)` no solution
+- if `\(Q\)` singular, `\(b \in Col[Q] \rightarrow\)` `\(x^{*} = -Q^{+}b + z\)` with `\(z \in null(Q)\)`
 
 ---
 class: center, inverse, middle
 
 # Useful operations
+
+---
+
+## Rewriting constraints
+
+$$
+`\begin{aligned}
+\min_{x \in D} &amp;\quad f(x)\\
+\text{subject to} &amp;\quad g_i(x) \leq 0  &amp; \forall i \in 1,\ldots,m \\
+&amp;\quad A x = b
+\end{aligned}`
+$$
+
+
+Let `\(C = \{x : g_i(x) \leq 0,\ Ax=b\}\)`.
+
+`$$\Longleftrightarrow \min_{x \in C} f(x)$$`
+
+`$$\Longleftrightarrow \min_{x \in D} f(x) + I_C(x)$$`
+
+
+
 
 ---
 
@@ -205,7 +240,7 @@ g_{1}(x_{1}) &amp;\le 0\\
 \end{aligned}`
 $$
 
-where `\(\tilde{f}(x_1) = \min\Set{f(x_1,x_2): g_2(x_2)\le 0}\)`.
+where `\(\tilde{f}(x_1) = \min\{f(x_1,x_2): g_2(x_2)\le 0\}\)`.
 
 - The right problem is convex if the left is (and vice versa)
 
@@ -214,22 +249,43 @@ where `\(\tilde{f}(x_1) = \min\Set{f(x_1,x_2): g_2(x_2)\le 0}\)`.
 ## Transformations
 
 - We can use a monotone increasing transformation
-`\(h: \mathbb{R} \rightarrow \mathbb{R}\)`:\
-`$$\quad \min\limits_{x\in C} f(x) \Rightarrow \min\limits_{x\in C} h(f(x))$$`\
+`\(h: \mathbb{R} \rightarrow \mathbb{R}\)`:
+`$$\quad \min\limits_{x\in C} f(x) \Rightarrow \min\limits_{x\in C} h(f(x))$$`
 - We can use a change of variable transformation
-`\(\phi : \mathbb{R}^{n} \Rightarrow \mathbb{R}^{m}\)` :\
+`\(\phi : \mathbb{R}^{n} \Rightarrow \mathbb{R}^{m}\)` :
 `$$\quad \min\limits_{x \in C} f(x) \Leftrightarrow \min\limits_{\phi(y) \in C} f(\phi(y))$$`
 
 ---
 
-__Example:__ Geometric Program
+## Example: Geometric Program
 
-`$$\min\limits_{x \in C} f(x) = \sum\limits_{k=1}^{p}\gamma_{k}x_{1}^{a_{k_1}}x_{2}^{a_{k_{2}}} ..x_{n}^{a_{k_{n}}}\quad\quad
-\textrm{(posynomial)}$$`
+$$
+`\begin{aligned}
+\min_x &amp;\quad f(x) = \sum\limits_{k=1}^{p}\gamma_{k}x_{1}^{a_{k_1}}x_{2}^{a_{k_{2}}} \ldots x_{n}^{a_{k_{n}}}\quad\quad
+\textrm{(posynomial)}\\
+\textrm{s.t.} &amp;\quad g_i(x) \leq 1\\
+&amp;\quad h_j(x) = 1
+\end{aligned}`
+$$
 
-- `\(C\)` : involves (convex) inequalities in some form and equalities are affine.\
-- We can change above non-convex problem to the following convex problem
+- `\(f\)` and `\(g\)` are posynomials and `\(h\)` are monomials
+
+- This is nonconvex
+
+--
+
+- We can change above  to the following convex problem
 by letting `\(y_{i} = \log x_{i}\)` 
+
+$$
+`\begin{aligned}
+\min_x &amp;\quad f(x) = \log\left(\sum\limits_{k=1}^{p_0}\exp(a_{0k}^\top y + b_{0k})\right)\\
+\textrm{s.t.} &amp;\quad \log\left(\sum\limits_{k=1}^{p_i}\exp(a_{ik}^\top y + b_{ik})\right) \leq 1\\
+&amp;\quad c_j^\top y + d_j = 0
+\end{aligned}`
+$$
+
+- This is a standard problem, (logistic regression, floor planning)
 
 ---
 
@@ -242,7 +298,7 @@ $$
 \end{aligned}`
 $$
 
-- `\(x\)` feasible means `\(\exists M : col[M]= null[A]\)` and `\(x_0 \st Ax_{0} = b\)` 
+- `\(x\)` feasible means `\(\exists M : col(M)= null(A)\)` and `\(x_0 \st Ax_{0} = b\)` 
 - Let `\(x=My + x_{0}\)`
 
 Then the following is an equivalent problem:
@@ -278,15 +334,28 @@ $$
 
 - But this is nonconvex unless `\(g_i\)` are affine
 
+---
+
 __Relaxation__
 
 We can relax nonaffine
 constraints 
 `$$\min\limits_{x \in C} f(x) \Rightarrow \min\limits_{x \in \tilde{C} } f(x)$$`
-with `\(C \subset \tilde{C}\)`\
+with `\(C \subset \tilde{C}\)`
 
 - In this case optimum of new problem is smaller or equal to the optimum
 of the original problem.
+
+--
+
+$$
+`\begin{aligned}
+\min\limits_{x,s}&amp;\quad f(x) \\
+\textrm{s.t.} &amp;\quad g_{i}(x) + s_i \leq  0\\
+&amp;\quad s_i \geq 0\\
+&amp;\quad Ax = b
+\end{aligned}`
+$$
 
 ---
 class: middle, inverse, center
@@ -297,24 +366,40 @@ class: middle, inverse, center
 
 ## LP (Linear Programs) 
 
-`$$\min_{x} c^{T}x$$` with affine constraints
+`$$\min_{x} c^{\top}x\qquad \mbox{s.t.}\qquad x\geq 0,\ Ax=b \qquad \mbox{(standard form)}$$`
 
 - Basis Pursuit (not an LP)
-`\(\qquad \min\limits_{\beta} \| \beta \|_0\)` s.t. `\(X \beta = y\)`\
-- Above problem can be relaxed to :\
-`\(\qquad \min\limits_{\beta} \| \beta \|_{1}\)` s.t. `\(X \beta = y\)`.\
-- This relaxation can be reformulated to a LP problem:\
-`\(\qquad \min\limits_{\beta, z} 1^{T}z\)` s.t.
-`\(z \ge \beta, z \ge -\beta, X\beta = y\)`
-- Dantzig selector\
-`\(\qquad \min\limits_{\beta} \| \beta \|_{1}\)` s.t.
-`\(\|X^{\top}(y - X\beta)\|_{\infty} \le \lambda\)`
+`$$\qquad \min\limits_{\beta} \| \beta \|_0\quad  \mbox{s.t.}\quad X \beta = y$$`
+- Above problem can be relaxed to
+`$$\qquad \min\limits_{\beta} \| \beta \|_{1}\quad  \mbox{s.t.}\quad X \beta = y$$`
+- This relaxation can be reformulated as an LP problem:
+`$$\qquad \min\limits_{\beta, z} 1^{\top}z\quad  \mbox{s.t.}\quad z \ge \beta, z \ge -\beta, X\beta = y$$`
+- Dantzig selector
+`$$\qquad \min\limits_{\beta} \| \beta \|_{1}\quad  \mbox{s.t.}\quad \|X^{\top}(y - X\beta)\|_{\infty} \le \lambda$$`
+
+
+
 
 ---
 
 ## QP (Quadratic program)
 
-Lasso, ridge regression, OLS, Portfolio Optimization
+
+
+$$
+`\begin{aligned}
+\min_x &amp;\quad c^\top x + \frac{1}{2}x^\top Q x\\
+\textrm{s.t.}&amp;\quad x \geq 0\\
+&amp;\quad Ax = b
+\end{aligned}`
+$$
+
+
+Lasso, ridge regression, OLS, Portfolio Optimization, support vector machines
+
+--
+
+Some work to rewrite in this form, but it can be done
 
 ---
 
@@ -322,11 +407,25 @@ Lasso, ridge regression, OLS, Portfolio Optimization
 
 $$
 `\begin{aligned}
-\min\limits_{X \in S_{n}} &amp;\quad \tr(C^{T}X)\\
+\min\limits_{X \in S_{n}} &amp;\quad \tr{C^{\top}X}\\
 \textrm{s.t.}&amp;\quad \tr{A_{i}^{\top} X} = b_{i}\\
 &amp;\quad X \succeq 0
 \end{aligned}`
 $$
+
+--
+
+Trace norm minimization
+
+$$
+`\begin{aligned}
+\min_X &amp;\quad \tr{X}\\
+\textrm{s.t.}&amp;\quad \tr{A_{i}^{\top} X} = b_{i}
+\end{aligned}`
+$$
+
+(Find the "lowest" rank solution to an underdetermined system.)
+
 
 ---
 
@@ -343,13 +442,29 @@ $$
 
 `\(D\)` a linear mapping, `\(K\)` a closed convex cone.
 
-- Very similar to an LP
+- Generalization of an LP (take `\(K=\R^n_+\)`) or SDP (take `\(K = \mathcal{S}^n_+\)`)
+
+## Second order cone program
+
+$$
+`\begin{aligned}
+\min\limits_{x} &amp;\quad c^\top x\\
+\textrm{s.t.}&amp;\quad Ax=b\\
+&amp;\quad \| D_i x  + d_i \|_w \leq e_i^\top x + f_i
+\end{aligned}`
+$$
+
+- also a special case conic program
+
+
 
 ---
 
 ## Relations
 
-`\(LP \subset QP \subset SOCP \subset SDP \subset CP(Conic Programming)\)`
+.center[
+![:scale 80%](gfx/cp-hierarchy.png)
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
