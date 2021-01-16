@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>04 Gradient descent</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 04 Gradient descent
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-01-15
+
+---
+
+
+
+
+## Last time
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+.pull-left[
+A convex optimization problem 
+$$
+`\begin{aligned}
+\min\limits_{x \in D} &amp;\quad f(x) \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in 1,\ldots, m \\
+&amp;\quad A x = b 
+\end{aligned}`
+$$
+where `\(f, g_i\)` are convex and `\(D = \dom{f} \cap \dom{g_i}\)`.
+
+]
+
+--
+
+.pull-left[
+
+
+* Saw transformations.
+
+* First Order Condition (FOC)
+
+]
+
+
+--
+
+.pull-right[
+
+**Relations**
+
+.center[
+![:scale 80%](gfx/cp-hierarchy.png)
+]
+
+]
+
+
+---
+
+
+## Very basic example
+
+.pull-left[
+Suppose I want to minimize `\(f(x)=(x-6)^2\)` numerically.
+
+I start at a point (say `\(x_1=23\)`)
+
+I want to "go" in the negative direction of the gradient.
+
+The gradient (at `\(x_1=23\)`) is  
+`\(f'(23)=2(23-6)=34\)`.
+
+OK go that way by some small amount: 
+
+`\(x_2 = x_1 - \gamma 34\)`, for `\(\gamma\)` small.
+
+In general, `\(x_{n+1} = x_n -\gamma f'(x_n)\)`.
+
+]
+  
+.pull-right[  
+  
+
+```r
+niter = 10
+gam = 0.1
+x = double(niter)
+x[1] = 23
+grad &lt;- function(x) 2*(x-6)
+for(i in 2:niter) x[i] = x[i-1] - gam*grad(x[i-1])
+```
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-2-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Today
+
+1. Gradient descent implementation
+
+2. Techniques for increasing speed of convergence
+
+3. What if `\(f\)` isn't differentiable?
+
+---
+
+## First order methods
+
+For simplicity, consider unconstrained optimization 
+`\begin{equation}
+\min_x f(x)
+\end{equation}`
+assume `\(f\)` is convex and differentiable
+
+__Gradient descent__
+
+-   Choose `\(x^{(0)}\)`
+
+-   Iterate `\(x^{(k)} = x^{(k-1)} - \gamma_k\nabla f(x^{(k-1)})\)`
+
+-   Stop sometime
+
+---
+
+## Why does this work?
+
+__Heuristic interpretation:__
+
+* Gradient tells me the slope.
+
+* negative gradient points toward the minimum
+
+* go that way, but not too far (or we'll miss it)
+
+__More rigorous interpretation:__
+
+- Taylor expansion
+$$
+f(x_0) \approx f(x) + \nabla f(x)^{\top}(x_0-x) + \frac{1}{2}(x_0-x)^\top H (x_0-x)
+$$
+- replace `\(H\)` with `\(\gamma^{-1} I\)`
+
+- Choose `\(x=x^{+}\)` to minimize the quadratic approximation:
+$$
+0\overset{\textrm{set}}{=}\nabla f(x_0) + \frac{1}{\gamma}(x-x_0) \Longrightarrow x = x_0 - \gamma \nabla f(x_0)
+$$
+
+
+---
+
+## Visually
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-3-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+## What t?
+
+What to use for `\(\gamma_k\)`? 
+
+__Fixed__
+
+- Only works if `\(\gamma\)` is exactly right 
+- Usually does not work
+
+__Sequence__ 
+
+`$$\gamma_k \quad \st \sum_{k=1}^{\infty} \gamma_k = \infty ,\quad
+              \sum_{k=1}^{\infty} \gamma^{2}_k &lt; \infty$$`
+
+__Exact line search__
+
+- Tells you exactly how far you want to go
+- At each `\(k\)`, solve
+$$\gamma = \arg\min_{s &gt;= 0} f\big( x^{(k)} - s f(x^{(k-1)})\big) $$
+- Usually can't solve this.
+
+
+---
+
+
+## Backtracking line search
+
+Approximation to exact line search
+
+
+1. Set `\(0 &lt;\beta &lt; 1 , 0 &lt; \alpha &lt;\frac{1}{2}\)`
+
+2. At each `\(k\)`, set `\(\gamma=\gamma_0\)`. While
+`$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) &gt; f(x^{(k)}) - \alpha \gamma \norm{ f(x^{(k)})}^{2}_{2}$$`
+set `\(\gamma \leftarrow \beta \gamma\)` 
+
+3. `\(x^{k+1} = x - \gamma \nabla f(x_k)\)` 
+
+
+---
+
+$$ f(\beta_1,\beta_2) = \beta_1^2 + 0.5\beta_2^2$$
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-4-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+
+```r
+beta &lt;- matrix(0,40,2)
+beta[1,] &lt;- c(1,1)
+grad &lt;- function(beta) c(2, 1) * beta
+gamma &lt;- .1
+for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
+```
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-6-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+beta &lt;- matrix(0,40,2)
+beta[1,] &lt;- c(1,1)
+gamma &lt;- .9
+for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
+```
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-8-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+
+```r
+beta &lt;- matrix(0,40,2)
+beta[1,] &lt;- c(1,1)
+gamma &lt;- .5
+for (i in 2:40) beta[i,] = beta[i-1,] - gamma / sqrt(i) * grad( beta[i-1,])
+```
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-10-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+.pull-left[
+
+```r
+fb &lt;- function(x) drop(c(1,0.5) %*% x^2)
+gamma0 &lt;- .9
+alpha &lt;- 0.5
+tau &lt;- 0.9
+backtrack &lt;- TRUE
+for (i in 2:40) {
+  gamma &lt;- gamma0
+  while (backtrack) {
+    gamma &lt;- tau*gamma
+    gg &lt;- grad(beta[i-1,])
+    prop &lt;- beta[i-1,] - gamma * gg
+    backtrack &lt;- (
+      fb(prop) &gt; fb(beta[i-1,]) - 
+        alpha * gamma * sum(gg^2)
+    )
+  }
+  beta[i,] &lt;- prop
+  backtrack &lt;- TRUE
+}
+```
+]
+
+.pull-right[
+
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-12-1.svg" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+## Convergence properties
+
+If `\(\nabla f\)` is Lipschitz, use fixed `\(\gamma\)`
+
+1. GD converges at rate `\(O(1/k)\)`
+2. `\(\epsilon\)`-optimal in `\(O(1/\epsilon)\)` iterations
+
+If `\(f\)` is strongly convex as well
+
+1. GD converges at rate `\(O(c^k)\)` ($0&lt;c&lt;1$).
+2. `\(\epsilon\)`-optimal in `\(O(\log(1/\epsilon))\)` iterations
+
+We call this second case "linear convergence" because it's linear on the `\(\log\)` scale.
+
+---
+
+## Momentum
+
+Carry along some information from the previous iterate, (usually `\(\eta=0.9\)`)
+
+.pull-left[
+
+`\(v \leftarrow \eta v + \gamma \nabla f(\beta)\)`
+
+`\(\beta^+ \leftarrow \beta - v\)`
+
+
+
+```r
+beta[1,] &lt;- c(1,1)
+gamma &lt;- .2
+eta &lt;- .9
+v &lt;- 0
+for (i in 2:40) {
+  v &lt;- eta * v + gamma * grad(beta[i-1,])
+  beta[i,] &lt;- beta[i-1,] - v
+}
+```
+
+]
+
+.pull-right[
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-14-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Nesterov's version (sometimes called "acceleration")
+
+Idea is to let the gradient depend on the momentum as well
+
+.pull-left[
+
+`\(v \leftarrow \eta v + \gamma \nabla f(\beta-\gamma v)\)`
+
+`\(\beta^+ \leftarrow \beta - v\)`
+
+
+
+```r
+beta[1,] &lt;- c(1,1)
+gamma &lt;- .2
+eta &lt;- .9
+v &lt;- 0
+for (i in 2:40) {
+  v &lt;- eta * v + gamma * grad(beta[i-1,] - gamma * v)
+  beta[i,] &lt;- beta[i-1,] - v
+}
+```
+
+]
+
+
+.pull-right[
+
+&lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-16-1.svg" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Subgradient descent
+
+What happens when `\(f\)` isn't differentiable?
+
+A __subgradient__ of convex `\(f\)` at a point `\(x\)` is any `\(g\)` such that
+`$$f(y) \geq f(x) + g^\top (y-x)\quad\quad \forall y$$`
+
+- Always exists
+- `\(f\)` differentiable `\(\Rightarrow g=\nabla f(x)\)` (unique)
+- Just plug in the subgradient in GD
+- `\(f\)` Lipschitz gives `\(O(1/\sqrt{k})\)` convergence
+
+---
+
+## Example (LASSO)
+
+`$$\min_{\beta} \frac{1}{2n}\norm{y - X\beta}_2^2 + \lambda\norm{\beta}$$`
+
+- Subdifferential (the set of subgradients)
+
+`$$\begin{aligned}
+g(\beta) &amp;= -X^T(y - X\beta) + \lambda\partial\norm{\beta}_1 \\
+&amp; =-X^\top(y - X\beta) + \lambda v \\
+v_i &amp;=
+    \begin{cases}
+        \{1\}      &amp; \quad \text{if } \beta_i &gt; 0\\
+        \{-1\}      &amp; \quad \text{if } \beta_i &lt; 0\\
+        [-1,1]     &amp; \quad \text{if } \beta_i = 0\\
+    \end{cases}
+\end{aligned}$$`
+
+So `\(\textrm{sign}(\beta) \in \partial\norm{\beta}_1\)`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
