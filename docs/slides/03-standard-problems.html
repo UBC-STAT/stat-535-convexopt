@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 # 03 Basics and standard problems
 ### STAT 535A
 ### Daniel J. McDonald
-### Last modified - 2021-01-13
+### Last modified - 2021-01-18
 
 ---
 
@@ -102,7 +102,7 @@ $$
 $$
 `\begin{aligned}
 \min\limits_{x \in D} &amp;\quad f(x) \\
-\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in [1:m] \\
+\text{subject to} &amp;\quad g_i(x) \leq 0 &amp; \forall i \in 1,\ldots,m \\
 &amp;\quad A x = b 
 \end{aligned}`
 $$
@@ -171,7 +171,7 @@ subject to `\(\left\lVert \beta \right\rVert_1 \leq s\)`.
 -   `\(X\)` is `\(n \times p\)` matrix
 
     -   If `\(n \geq p\)` and `\(X\)` is full rank then
-        `\(\nabla^2 f(\cdot) = 2 {X}^\mathsf{T} X\)` is positive definite
+        `\(\nabla^2 f(\cdot) = 2 {X}^\top X\)` is positive definite
         matrix. The function is strictly convex, therefore the solution
         is unique.
 
@@ -185,13 +185,13 @@ subject to `\(\left\lVert \beta \right\rVert_1 \leq s\)`.
 
 -   convex problem with differentiable `\(f\)`
 
--   a feasible `\(x\)` is optimal iff `\(\nabla f(x)^{T}( x - y) \ge 0\)`,
+-   a feasible `\(x\)` is optimal iff `\(\nabla f(x)^{\top}( x - y) \ge 0\)`,
     `\(\forall\)` feasible `\(y\)`
 
 -   if unconstrained, the condition reduces to `\(\nabla f(x)  = 0\)`
 
-`$$\min\limits_x \frac{1}{2}x^{T}Q x + b^{T}x + c, \quad\quad Q \succeq 0$$`
-- FOC: `\(\nabla f(x) = Q^{T}x + b = 0\)`
+`$$\min\limits_x \frac{1}{2}x^{\top}Q x + b^{\top}x + c, \quad\quad Q \succeq 0$$`
+- FOC: `\(\nabla f(x) = Q^{\top}x + b = 0\)`
 - if `\(Q \succ 0\)` `\(\rightarrow\)` `\(x^{*} = -Q^{-1}b\)`
 - if `\(Q\)` singular, `\(b \notin Col[Q] \rightarrow\)` no solution
 - if `\(Q\)` singular, `\(b \in Col[Q] \rightarrow\)` `\(x^{*} = -Q^{+}b + z\)` with `\(z \in null(Q)\)`

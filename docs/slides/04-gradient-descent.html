@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 # 04 Gradient descent
 ### STAT 535A
 ### Daniel J. McDonald
-### Last modified - 2021-01-15
+### Last modified - 2021-01-18
 
 ---
 
@@ -179,7 +179,7 @@ $$
 
 ---
 
-## What t?
+## What `\(\gamma\)`?
 
 What to use for `\(\gamma_k\)`? 
 
@@ -197,7 +197,7 @@ __Exact line search__
 
 - Tells you exactly how far you want to go
 - At each `\(k\)`, solve
-$$\gamma = \arg\min_{s &gt;= 0} f\big( x^{(k)} - s f(x^{(k-1)})\big) $$
+$$\gamma = \arg\min_{s \geq 0} f\big( x^{(k)} - s f(x^{(k-1)})\big) $$
 - Usually can't solve this.
 
 
@@ -209,13 +209,13 @@ $$\gamma = \arg\min_{s &gt;= 0} f\big( x^{(k)} - s f(x^{(k-1)})\big) $$
 Approximation to exact line search
 
 
-1. Set `\(0 &lt;\beta &lt; 1 , 0 &lt; \alpha &lt;\frac{1}{2}\)`
+1. Set `\(0 &lt;\beta &lt; 1 , 0 &lt; \alpha \leq\frac{1}{2}\)`
 
 2. At each `\(k\)`, set `\(\gamma=\gamma_0\)`. While
 `$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) &gt; f(x^{(k)}) - \alpha \gamma \norm{ f(x^{(k)})}^{2}_{2}$$`
 set `\(\gamma \leftarrow \beta \gamma\)` 
 
-3. `\(x^{k+1} = x - \gamma \nabla f(x_k)\)` 
+3. `\(x^{(k+1)} = x^{(k)} - \gamma \nabla f(x^{(k})\)` 
 
 
 ---
@@ -310,7 +310,7 @@ If `\(\nabla f\)` is Lipschitz, use fixed `\(\gamma\)`
 
 If `\(f\)` is strongly convex as well
 
-1. GD converges at rate `\(O(c^k)\)` ($0&lt;c&lt;1$).
+1. GD converges at rate `\(O(c^k)\)` `\((0&lt;c&lt;1)\)`.
 2. `\(\epsilon\)`-optimal in `\(O(\log(1/\epsilon))\)` iterations
 
 We call this second case "linear convergence" because it's linear on the `\(\log\)` scale.
@@ -323,9 +323,9 @@ Carry along some information from the previous iterate, (usually `\(\eta=0.9\)`)
 
 .pull-left[
 
-`\(v \leftarrow \eta v + \gamma \nabla f(\beta)\)`
+`\(v \leftarrow \eta v + \gamma \nabla f(x)\)`
 
-`\(\beta^+ \leftarrow \beta - v\)`
+`\(x^+ \leftarrow \beta - v\)`
 
 
 
@@ -333,7 +333,7 @@ Carry along some information from the previous iterate, (usually `\(\eta=0.9\)`)
 beta[1,] &lt;- c(1,1)
 gamma &lt;- .2
 eta &lt;- .9
-v &lt;- 0
+v &lt;- c(0,0)
 for (i in 2:40) {
   v &lt;- eta * v + gamma * grad(beta[i-1,])
   beta[i,] &lt;- beta[i-1,] - v
@@ -355,9 +355,9 @@ Idea is to let the gradient depend on the momentum as well
 
 .pull-left[
 
-`\(v \leftarrow \eta v + \gamma \nabla f(\beta-\gamma v)\)`
+`\(v \leftarrow \eta v + \gamma \nabla f(x-\gamma v)\)`
 
-`\(\beta^+ \leftarrow \beta - v\)`
+`\(x^+ \leftarrow x - v\)`
 
 
 
@@ -365,7 +365,7 @@ Idea is to let the gradient depend on the momentum as well
 beta[1,] &lt;- c(1,1)
 gamma &lt;- .2
 eta &lt;- .9
-v &lt;- 0
+v &lt;- c(0,0)
 for (i in 2:40) {
   v &lt;- eta * v + gamma * grad(beta[i-1,] - gamma * v)
   beta[i,] &lt;- beta[i-1,] - v
@@ -398,7 +398,7 @@ A __subgradient__ of convex `\(f\)` at a point `\(x\)` is any `\(g\)` such that
 
 ## Example (LASSO)
 
-`$$\min_{\beta} \frac{1}{2n}\norm{y - X\beta}_2^2 + \lambda\norm{\beta}$$`
+`$$\min_{\beta} \frac{1}{2n}\norm{y - X\beta}_2^2 + \lambda\norm{\beta}_1$$`
 
 - Subdifferential (the set of subgradients)
 
