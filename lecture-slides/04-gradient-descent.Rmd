@@ -416,6 +416,22 @@ g + geom_path(data=b,aes(b1,b2)) + geom_point(data=b,aes(b1,b2),size=2) +
 
 ---
 
+## When do we stop?
+
+For $\epsilon>0$, small
+
+
+Check any/all of
+
+1. $|f'(x)| < \epsilon$
+
+2. $|x^{(k)} - x^{(k-1)}| < \epsilon$
+
+3. $|f(x^{(k)}) - f(x^{(k-1)})| < \epsilon$
+
+
+---
+
 ## Subgradient descent
 
 What happens when $f$ isn't differentiable?

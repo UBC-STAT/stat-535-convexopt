@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 # 04 Gradient descent
 ### STAT 535A
 ### Daniel J. McDonald
-### Last modified - 2021-01-18
+### Last modified - 2021-01-20
 
 ---
 
@@ -379,6 +379,22 @@ for (i in 2:40) {
 
 &lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-16-1.svg" style="display: block; margin: auto;" /&gt;
 ]
+
+---
+
+## When do we stop?
+
+For `\(\epsilon&gt;0\)`, small
+
+
+Check any/all of
+
+1. `\(|f'(x)| &lt; \epsilon\)`
+
+2. `\(|x^{(k)} - x^{(k-1)}| &lt; \epsilon\)`
+
+3. `\(|f(x^{(k)}) - f(x^{(k-1)})| &lt; \epsilon\)`
+
 
 ---
 
