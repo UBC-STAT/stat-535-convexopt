@@ -85,18 +85,18 @@ where `\(f, g_i\)` are convex and `\(D = \dom{f} \cap \dom{g_i}\)`.
 .pull-left[
 Suppose I want to minimize `\(f(x)=(x-6)^2\)` numerically.
 
-I start at a point (say `\(x_1=23\)`)
+I start at a point (say `\(x^{(0)}=23\)`)
 
 I want to "go" in the negative direction of the gradient.
 
-The gradient (at `\(x_1=23\)`) is  
+The gradient (at `\(x^{(0)}=23\)`) is  
 `\(f'(23)=2(23-6)=34\)`.
 
 OK go that way by some small amount: 
 
-`\(x_2 = x_1 - \gamma 34\)`, for `\(\gamma\)` small.
+`\(x^{(1)} = x^{(0)} - \gamma 34\)`, for `\(\gamma\)` small.
 
-In general, `\(x_{n+1} = x_n -\gamma f'(x_n)\)`.
+In general, `\(x^{(k+1)} = x^{(k)} -\gamma f'(x^{(k)})\)`.
 
 ]
   
@@ -159,11 +159,11 @@ __More rigorous interpretation:__
 
 - Taylor expansion
 $$
-f(x_0) \approx f(x) + \nabla f(x)^{\top}(x_0-x) + \frac{1}{2}(x_0-x)^\top H (x_0-x)
+f(x) \approx f(x_0) + \nabla f(x_0)^{\top}(x-x_0) + \frac{1}{2}(x-x_0)^\top H(x_0) (x-x_0)
 $$
 - replace `\(H\)` with `\(\gamma^{-1} I\)`
 
-- Choose `\(x=x^{+}\)` to minimize the quadratic approximation:
+- minimize the quadratic approximation in `\(x\)`:
 $$
 0\overset{\textrm{set}}{=}\nabla f(x_0) + \frac{1}{\gamma}(x-x_0) \Longrightarrow x = x_0 - \gamma \nabla f(x_0)
 $$
@@ -212,7 +212,7 @@ Approximation to exact line search
 1. Set `\(0 &lt;\beta &lt; 1 , 0 &lt; \alpha \leq\frac{1}{2}\)`
 
 2. At each `\(k\)`, set `\(\gamma=\gamma_0\)`. While
-`$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) &gt; f(x^{(k)}) - \alpha \gamma \norm{ f(x^{(k)})}^{2}_{2}$$`
+`$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) &gt; f(x^{(k)}) - \alpha \gamma \norm{ \nabla f(x^{(k)})}^{2}_{2}$$`
 set `\(\gamma \leftarrow \beta \gamma\)` 
 
 3. `\(x^{(k+1)} = x^{(k)} - \gamma \nabla f(x^{(k})\)` 
@@ -220,7 +220,7 @@ set `\(\gamma \leftarrow \beta \gamma\)`
 
 ---
 
-$$ f(\beta_1,\beta_2) = \beta_1^2 + 0.5\beta_2^2$$
+$$ f(x_1,x_2) = x_1^2 + 0.5x_2^2$$
 
 &lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-4-1.svg" style="display: block; margin: auto;" /&gt;
 
@@ -229,11 +229,11 @@ $$ f(\beta_1,\beta_2) = \beta_1^2 + 0.5\beta_2^2$$
 
 
 ```r
-beta &lt;- matrix(0,40,2)
-beta[1,] &lt;- c(1,1)
-grad &lt;- function(beta) c(2, 1) * beta
+x &lt;- matrix(0,40,2)
+x[1,] &lt;- c(1,1)
+grad &lt;- function(x) c(2, 1) * x
 gamma &lt;- .1
-for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
+for (k in 2:40) x[k,] &lt;- x[k-1,] - gamma * grad(x[k-1,])
 ```
 
 &lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-6-1.svg" style="display: block; margin: auto;" /&gt;
@@ -242,10 +242,10 @@ for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
 
 
 ```r
-beta &lt;- matrix(0,40,2)
-beta[1,] &lt;- c(1,1)
+x &lt;- matrix(0,40,2)
+x[1,] &lt;- c(1,1)
 gamma &lt;- .9
-for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
+for (k in 2:40) x[k,] &lt;- x[k-1,] - gamma * grad(x[k-1,])
 ```
 
 &lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-8-1.svg" style="display: block; margin: auto;" /&gt;
@@ -255,10 +255,10 @@ for (i in 2:40) beta[i,] &lt;- beta[i-1,] - gamma * grad(beta[i-1,])
 
 
 ```r
-beta &lt;- matrix(0,40,2)
-beta[1,] &lt;- c(1,1)
+x &lt;- matrix(0,40,2)
+x[1,] &lt;- c(1,1)
 gamma &lt;- .5
-for (i in 2:40) beta[i,] = beta[i-1,] - gamma / sqrt(i) * grad( beta[i-1,])
+for (k in 2:40) x[k,] = x[k-1,] - gamma / sqrt(k) * grad( x[k-1,])
 ```
 
 &lt;img src="rmd_gfx/04-gradient-descent/unnamed-chunk-10-1.svg" style="display: block; margin: auto;" /&gt;
@@ -272,20 +272,18 @@ for (i in 2:40) beta[i,] = beta[i-1,] - gamma / sqrt(i) * grad( beta[i-1,])
 fb &lt;- function(x) drop(c(1,0.5) %*% x^2)
 gamma0 &lt;- .9
 alpha &lt;- 0.5
-tau &lt;- 0.9
+beta &lt;- 0.9
 backtrack &lt;- TRUE
-for (i in 2:40) {
+for (k in 2:40) {
   gamma &lt;- gamma0
+  gg &lt;- grad(x[k - 1, ])
   while (backtrack) {
-    gamma &lt;- tau*gamma
-    gg &lt;- grad(beta[i-1,])
-    prop &lt;- beta[i-1,] - gamma * gg
-    backtrack &lt;- (
-      fb(prop) &gt; fb(beta[i-1,]) - 
-        alpha * gamma * sum(gg^2)
-    )
+    gamma &lt;- beta * gamma
+    prop &lt;- x[k-1,] - gamma * gg
+    backtrack &lt;- (fb(prop) &gt; fb(x[k-1,]) - 
+        alpha * gamma * sum(gg^2))
   }
-  beta[i,] &lt;- prop
+  x[i,] &lt;- prop
   backtrack &lt;- TRUE
 }
 ```
@@ -323,20 +321,20 @@ Carry along some information from the previous iterate, (usually `\(\eta=0.9\)`)
 
 .pull-left[
 
-`\(v \leftarrow \eta v + \gamma \nabla f(x)\)`
+`\(v \leftarrow \eta v + \gamma \nabla f(x^{(k)})\)`
 
-`\(x^+ \leftarrow \beta - v\)`
+`\(x^{(k+1)} \leftarrow x^{(k)} - v\)`
 
 
 
 ```r
-beta[1,] &lt;- c(1,1)
+x[1,] &lt;- c(1,1)
 gamma &lt;- .2
 eta &lt;- .9
 v &lt;- c(0,0)
 for (i in 2:40) {
-  v &lt;- eta * v + gamma * grad(beta[i-1,])
-  beta[i,] &lt;- beta[i-1,] - v
+  v &lt;- eta * v + gamma * grad(x[i-1,])
+  x[i,] &lt;- x[i-1,] - v
 }
 ```
 
@@ -355,20 +353,20 @@ Idea is to let the gradient depend on the momentum as well
 
 .pull-left[
 
-`\(v \leftarrow \eta v + \gamma \nabla f(x-\gamma v)\)`
+`\(v \leftarrow \eta v + \gamma \nabla f(x^{(k)}-\gamma v)\)`
 
-`\(x^+ \leftarrow x - v\)`
+`\(x^{(k+1)} \leftarrow x^{(k)} - v\)`
 
 
 
 ```r
-beta[1,] &lt;- c(1,1)
+x[1,] &lt;- c(1,1)
 gamma &lt;- .2
 eta &lt;- .9
 v &lt;- c(0,0)
 for (i in 2:40) {
-  v &lt;- eta * v + gamma * grad(beta[i-1,] - gamma * v)
-  beta[i,] &lt;- beta[i-1,] - v
+  v &lt;- eta * v + gamma * grad(x[i-1,] - gamma * v)
+  x[i,] &lt;- x[i-1,] - v
 }
 ```
 
@@ -389,11 +387,11 @@ For `\(\epsilon&gt;0\)`, small
 
 Check any/all of
 
-1. `\(|f'(x)| &lt; \epsilon\)`
+1. `\(\|f'(x)\| &lt; \epsilon\)`
 
-2. `\(|x^{(k)} - x^{(k-1)}| &lt; \epsilon\)`
+2. `\(\|x^{(k)} - x^{(k-1)}\| &lt; \epsilon\)`
 
-3. `\(|f(x^{(k)}) - f(x^{(k-1)})| &lt; \epsilon\)`
+3. `\(\|f(x^{(k)}) - f(x^{(k-1)})\| &lt; \epsilon\)`
 
 
 ---

@@ -72,18 +72,18 @@ where $f, g_i$ are convex and $D = \dom{f} \cap \dom{g_i}$.
 .pull-left[
 Suppose I want to minimize $f(x)=(x-6)^2$ numerically.
 
-I start at a point (say $x_1=23$)
+I start at a point (say $x^{(0)}=23$)
 
 I want to "go" in the negative direction of the gradient.
 
-The gradient (at $x_1=23$) is  
+The gradient (at $x^{(0)}=23$) is  
 $f'(23)=2(23-6)=34$.
 
 OK go that way by some small amount: 
 
-$x_2 = x_1 - \gamma 34$, for $\gamma$ small.
+$x^{(1)} = x^{(0)} - \gamma 34$, for $\gamma$ small.
 
-In general, $x_{n+1} = x_n -\gamma f'(x_n)$.
+In general, $x^{(k+1)} = x^{(k)} -\gamma f'(x^{(k)})$.
 
 ]
   
@@ -153,11 +153,11 @@ __More rigorous interpretation:__
 
 - Taylor expansion
 $$
-f(x_0) \approx f(x) + \nabla f(x)^{\top}(x_0-x) + \frac{1}{2}(x_0-x)^\top H (x_0-x)
+f(x) \approx f(x_0) + \nabla f(x_0)^{\top}(x-x_0) + \frac{1}{2}(x-x_0)^\top H(x_0) (x-x_0)
 $$
 - replace $H$ with $\gamma^{-1} I$
 
-- Choose $x=x^{+}$ to minimize the quadratic approximation:
+- minimize the quadratic approximation in $x$:
 $$
 0\overset{\textrm{set}}{=}\nabla f(x_0) + \frac{1}{\gamma}(x-x_0) \Longrightarrow x = x_0 - \gamma \nabla f(x_0)
 $$
@@ -175,7 +175,7 @@ x = c(-1.75,-1,-.5)
 
 ggplot(data.frame(x=c(-2,3)), aes(x)) + 
   stat_function(fun=f, color=blue) + 
-  theme_cowplot() + 
+  theme_cowplot() + ylab('f(x)') +
   geom_point(data=data.frame(x=x,y=f(x)),aes(x,y),color=red) +
   stat_function(fun=quad, args = list(x0=-1.75), color=red) +
   stat_function(fun=quad, args = list(x0=-1), color=red) +
@@ -220,7 +220,7 @@ Approximation to exact line search
 1. Set $0 <\beta < 1 , 0 < \alpha \leq\frac{1}{2}$
 
 2. At each $k$, set $\gamma=\gamma_0$. While
-$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) > f(x^{(k)}) - \alpha \gamma \norm{ f(x^{(k)})}^{2}_{2}$$
+$$f\left(x^{(k)} - \gamma \nabla f(x^{(k)})\right) > f(x^{(k)}) - \alpha \gamma \norm{ \nabla f(x^{(k)})}^{2}_{2}$$
 set $\gamma \leftarrow \beta \gamma$ 
 
 3. $x^{(k+1)} = x^{(k)} - \gamma \nabla f(x^{(k})$ 
@@ -228,14 +228,14 @@ set $\gamma \leftarrow \beta \gamma$
 
 ---
 
-$$ f(\beta_1,\beta_2) = \beta_1^2 + 0.5\beta_2^2$$
+$$ f(x_1,x_2) = x_1^2 + 0.5x_2^2$$
 
 ```{r, message=FALSE, echo=FALSE, fig.align='center', fig.height=6, fig.width=8}
 library(tidyverse)
 df = expand.grid(b1 = seq(-1,1,length.out = 100), b2 = seq(-1,1,length.out = 100))
 df = df %>% mutate(f = b1^2 + b2^2/2)
 library(cowplot)
-g = ggplot(df, aes(b1,b2)) + geom_raster(aes(fill=log(f))) + theme_cowplot(24) + scale_fill_viridis_c()
+g = ggplot(df, aes(b1,b2)) + geom_raster(aes(fill=log(f))) + theme_cowplot(24) + scale_fill_viridis_c() + xlab('x1') + ylab('x2')
 g
 ```
 
@@ -243,15 +243,15 @@ g
 
 
 ```{r, message=FALSE, echo=TRUE, fig.align='center', fig.align='center'}
-beta <- matrix(0,40,2)
-beta[1,] <- c(1,1)
-grad <- function(beta) c(2, 1) * beta
+x <- matrix(0,40,2)
+x[1,] <- c(1,1)
+grad <- function(x) c(2, 1) * x
 gamma <- .1
-for (i in 2:40) beta[i,] <- beta[i-1,] - gamma * grad(beta[i-1,])
+for (k in 2:40) x[k,] <- x[k-1,] - gamma * grad(x[k-1,])
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height=5, fig.width=8}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) +
   geom_point(data=b,aes(b1,b2),size=2)
 ```
@@ -259,14 +259,14 @@ g + geom_path(data=b,aes(b1,b2)) +
 ---
 
 ```{r, message=FALSE, echo=TRUE, fig.align='center'}
-beta <- matrix(0,40,2)
-beta[1,] <- c(1,1)
+x <- matrix(0,40,2)
+x[1,] <- c(1,1)
 gamma <- .9
-for (i in 2:40) beta[i,] <- beta[i-1,] - gamma * grad(beta[i-1,])
+for (k in 2:40) x[k,] <- x[k-1,] - gamma * grad(x[k-1,])
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height=5, fig.width=8}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) + 
   geom_point(data=b,aes(b1,b2),size=2) + 
   coord_cartesian(c(-1,1),c(-1,1))
@@ -276,14 +276,14 @@ g + geom_path(data=b,aes(b1,b2)) +
 
 
 ```{r, message=FALSE, echo=TRUE, fig.align='center'}
-beta <- matrix(0,40,2)
-beta[1,] <- c(1,1)
+x <- matrix(0,40,2)
+x[1,] <- c(1,1)
 gamma <- .5
-for (i in 2:40) beta[i,] = beta[i-1,] - gamma / sqrt(i) * grad( beta[i-1,])
+for (k in 2:40) x[k,] = x[k-1,] - gamma / sqrt(k) * grad( x[k-1,])
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height=5, fig.width=8}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) + geom_point(data=b,aes(b1,b2),size=2)
 ```
 
@@ -295,20 +295,18 @@ g + geom_path(data=b,aes(b1,b2)) + geom_point(data=b,aes(b1,b2),size=2)
 fb <- function(x) drop(c(1,0.5) %*% x^2)
 gamma0 <- .9
 alpha <- 0.5
-tau <- 0.9
+beta <- 0.9
 backtrack <- TRUE
-for (i in 2:40) {
+for (k in 2:40) {
   gamma <- gamma0
+  gg <- grad(x[k - 1, ])
   while (backtrack) {
-    gamma <- tau*gamma
-    gg <- grad(beta[i-1,])
-    prop <- beta[i-1,] - gamma * gg
-    backtrack <- (
-      fb(prop) > fb(beta[i-1,]) - 
-        alpha * gamma * sum(gg^2)
-    )
+    gamma <- beta * gamma
+    prop <- x[k-1,] - gamma * gg
+    backtrack <- (fb(prop) > fb(x[k-1,]) - 
+        alpha * gamma * sum(gg^2))
   }
-  beta[i,] <- prop
+  x[i,] <- prop
   backtrack <- TRUE
 }
 ```
@@ -318,7 +316,7 @@ for (i in 2:40) {
 
 
 ```{r, echo=FALSE, fig.align='center'}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) +
   geom_point(data=b,aes(b1,b2),size=2)
 ```
@@ -350,19 +348,19 @@ Carry along some information from the previous iterate, (usually $\eta=0.9$)
 
 .pull-left[
 
-$v \leftarrow \eta v + \gamma \nabla f(x)$
+$v \leftarrow \eta v + \gamma \nabla f(x^{(k)})$
 
-$x^+ \leftarrow \beta - v$
+$x^{(k+1)} \leftarrow x^{(k)} - v$
 
 
 ```{r, message=FALSE, echo=TRUE, fig.align='center'}
-beta[1,] <- c(1,1)
+x[1,] <- c(1,1)
 gamma <- .2
 eta <- .9
 v <- c(0,0)
 for (i in 2:40) {
-  v <- eta * v + gamma * grad(beta[i-1,])
-  beta[i,] <- beta[i-1,] - v
+  v <- eta * v + gamma * grad(x[i-1,])
+  x[i,] <- x[i-1,] - v
 }
 ```
 
@@ -371,7 +369,7 @@ for (i in 2:40) {
 .pull-right[
 
 ```{r, echo=FALSE, fig.align='center'}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) +
   geom_point(data=b,aes(b1,b2),size=2) +
   coord_cartesian(c(-1,1),c(-1,1))
@@ -386,19 +384,19 @@ Idea is to let the gradient depend on the momentum as well
 
 .pull-left[
 
-$v \leftarrow \eta v + \gamma \nabla f(x-\gamma v)$
+$v \leftarrow \eta v + \gamma \nabla f(x^{(k)}-\gamma v)$
 
-$x^+ \leftarrow x - v$
+$x^{(k+1)} \leftarrow x^{(k)} - v$
 
 
 ```{r, message=FALSE, echo=TRUE, fig.align='center'}
-beta[1,] <- c(1,1)
+x[1,] <- c(1,1)
 gamma <- .2
 eta <- .9
 v <- c(0,0)
 for (i in 2:40) {
-  v <- eta * v + gamma * grad(beta[i-1,] - gamma * v)
-  beta[i,] <- beta[i-1,] - v
+  v <- eta * v + gamma * grad(x[i-1,] - gamma * v)
+  x[i,] <- x[i-1,] - v
 }
 ```
 
@@ -408,7 +406,7 @@ for (i in 2:40) {
 .pull-right[
 
 ```{r, echo=FALSE, fig.align='center'}
-b = tibble(b1=beta[,1],b2=beta[,2])
+b = tibble(b1=x[,1],b2=x[,2])
 g + geom_path(data=b,aes(b1,b2)) + geom_point(data=b,aes(b1,b2),size=2) +
   coord_cartesian(c(-1,1),c(-1,1))
 ```
@@ -423,11 +421,11 @@ For $\epsilon>0$, small
 
 Check any/all of
 
-1. $|f'(x)| < \epsilon$
+1. $\|f'(x)\| < \epsilon$
 
-2. $|x^{(k)} - x^{(k-1)}| < \epsilon$
+2. $\|x^{(k)} - x^{(k-1)}\| < \epsilon$
 
-3. $|f(x^{(k)}) - f(x^{(k-1)})| < \epsilon$
+3. $\|f(x^{(k)}) - f(x^{(k-1)})\| < \epsilon$
 
 
 ---
