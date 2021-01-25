@@ -1,0 +1,359 @@
+---
+title: "05 Proximal methods and SGD"
+author: 
+  - "STAT 535A"
+  - "Daniel J. McDonald"
+date: 'Last modified - `r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+source("rmd_config.R")
+```
+
+## Last time
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+
+
+Looked at unconstrained optimization 
+\begin{equation}
+\min_x f(x)
+\end{equation}
+
+.pull-left[
+__Gradient descent__
+
+-   Choose $x^{(0)}$
+
+-   Iterate $x^{(k)} = x^{(k-1)} - \gamma_k\nabla f(x^{(k-1)})$
+
+-   Stop sometime
+]
+
+.pull-right[
+- Rates of convergence: "linear" means $\epsilon$-suboptimal in $O(1/\log(\epsilon))$ iterations
+
+- Improvements: acceleration, momentum, backtracking line search
+
+- stopping criteria
+
+]
+
+--
+
+Assumed $f$ convex and **differentiable**
+
+If not differentiable, used subgradient
+
+
+---
+
+## Today
+
+**Some special cases**
+
+1. Avoid subgradient method
+
+2. $f(x) = g(x) + h(x)$ with certain "nice" $g$ and $h$
+
+3. $f(x) = \sum_{i=1}^n f(x_i)$
+
+
+---
+
+## Composite functions
+
+Subgradient can be slow
+
+Suppose (still unconstrained)
+
+$$
+\min_x f(x) = g(x) + h(x)
+$$
+
+* $g(x)$ is convex and differentiable
+* $h(x)$ is convex 
+
+--
+
+Taylor approximation to $f \longrightarrow$ gradient descent
+
+In GD, our update was (given $x$ from previous iterate)
+
+$$
+\begin{aligned}
+x^{(k)} &= \arg\min_z f(x^{(k-1)}) + \nabla f(x^{(k-1)})^\top (z - x^{(k-1)}) + \frac{1}{2\gamma}\norm{z - x^{(k-1)}}_2^2\\
+&= x^{(k-1)} - \gamma \nabla f(x^{(k-1)})
+\end{aligned}
+$$
+
+--
+
+Instead, do Taylor approximation to $g$ only
+
+---
+
+## Approximate $g$ only
+
+$$
+\begin{aligned}
+x^{(k+1)} &= \arg\min_z g(x^{(k)}) + \nabla g(x^{(k)})^\top (z - x^{(k)}) + \frac{1}{2\gamma}\norm{z - x^{(k)}}_2^2 + h(z)\\
+&= \arg\min_z \frac{1}{2\gamma} \norm{ z - (x^{(k)} - \gamma \nabla g(x^{(k)})) }_2^2 + h(z)
+\end{aligned}
+$$
+
+This has two parts:
+
+* $\frac{1}{2\gamma} \norm{z - (x^{(k)} - \gamma \nabla g(x^{(k)})) }_2^2$ means "stay close to the gradient update for $g$"
+
+* $h(z)$, need to make this small too
+
+* We're minimizing both over $z$.
+
+--
+
+Define the "proximal mapping/operator" of $h$:
+
+$$
+\textrm{prox}_{h,\gamma}(y) = \arg\min_z \frac{1}{2\gamma} \norm{ z - y }_2^2 + h(z)
+$$
+
+
+---
+
+## Proximal gradient descent
+
+Iterate:
+
+1. $x^{g} = x^{(k)} - \gamma \nabla g(x^{(k)})$ 
+
+2. $x^{(k+1)} = \textrm{prox}_{h,\gamma}(x^g)$ 
+
+--
+
+**What good did this do?**
+
+* We swapped performing GD on $f$ for GD on $g$ plus some weird prox thing
+
+* So unless, $\textrm{prox}_{h,\gamma}$ is "simple", this is dumb.
+
+--
+
+Luckily, $\textrm{prox}_{h,\gamma}$ **is** simple for many common $h$.
+
+Often has closed form.
+
+Furthermore, $g$ can be complicated, as long as we can compute it's gradients.
+
+---
+
+## Example: LASSO
+
+$$\min_\beta \underbrace{\frac{1}{2}\norm{y-X\beta}_2^2}_g + \underbrace{\lambda\norm{\beta}_1}_h$$
+
+$$\begin{aligned}
+\textrm{prox}_{\lambda\norm{\cdot}_1,\gamma} (\beta) &= \arg\min_z \norm{z-\beta}_2^2 + \lambda\norm{z}_1\\
+&=: S_{\lambda \gamma}(\beta)
+\end{aligned}$$
+
+$$[S_{\tau}(a)]_i = \textrm{sign}(a_i)(|a_i|-\tau)_+ = \begin{cases} 
+a_i - \tau & a_i > \tau\\ 
+0 & |a_i| \leq \tau\\
+a_i + \tau & a_i < -\tau
+\end{cases}$$
+
+
+So the update becomes:
+
+1. $\beta \leftarrow \beta + \gamma X^\top(y - X\beta)$
+2. $\beta \leftarrow S_{\lambda \gamma}(\beta)$
+
+This is called "Iterative soft thresholding" (ISTA)
+
+---
+
+## Projected gradient descent
+
+$$
+\min_{x\in C} f(x)
+$$
+
+- Incorporate the constraint into the objective using the indicator function:
+$$I_C(x) = \begin{cases} 0 & x \in C\\ +\infty & x \not\in C \end{cases}.$$
+- Call the indicator $h$, and use proximal GD
+- Now $\textrm{prox}_t(x) = \arg\min_{z\in C} \norm{z-x}_2^2$
+- This is just the Euclidean projection onto $C$
+
+
+So the update becomes:
+
+1. Use GD on $f$
+2. Project onto $C$
+
+
+---
+
+## Constrained least squares
+
+$$\min_{l < \beta < u} \frac{1}{2n}\norm{y-X\beta}_2^2$$
+
+* You can perhaps imagine better ways to do this
+
+
+.pull-left[
+
+1. $\beta \leftarrow \beta + \frac{\gamma}{n}X^\top(y-X\beta)$
+
+2. $\beta \leftarrow \Pi_{\{\beta : l < \beta < u\}} (\beta)$
+
+Can show that
+
+$$[\Pi(z)]_i = \begin{cases}u_i & z_i > u_i \\ l_i & z_i < l_i \\ z_i & \textrm{else} \end{cases}$$
+
+]
+
+.pull-right[
+```{r}
+set.seed(12345)
+n <- 100
+p <- 10
+X <- matrix(rnorm(n*p), n)
+bstar <- c(rep(1,3),runif(p-6,-1,1),rep(-1,3))
+y <- X %*% bstar + rnorm(n)
+Xy <- crossprod(X,y) / n
+XX <- crossprod(X) / n
+maxit <- 200
+gamma <- .05
+bhat <- matrix(0, p, maxit)
+grad <- function(b) - (Xy - XX %*% b)
+for (i in 2:maxit) {
+  g <- grad(bhat[,i-1])
+  prop <- bhat[,i-1] - gamma * g
+  prop[prop > 1] <- 1 
+  prop[prop < -1] <- -1
+  bhat[,i] <- prop
+  if (sum(g^2) < 1e-4) break
+}
+```
+
+]
+
+---
+
+```{r, fig.align='center', fig.width=6, fig.height=4, echo=FALSE}
+bhat <- bhat[,1:i]
+matplot(t(bhat), ty='l', col = c(rep(2,3),rep(3,p-6),rep(4,3)), lty=1)
+tab <-rbind(bstar, t(bhat[,i]), coef(lm(y~X-1))) 
+rownames(tab) = c("bstar", "ProjGD", "OLS")
+knitr::kable(tab, digits=2)
+```
+
+---
+
+## Enhancements
+
+Alternative formulation:
+
+Define the "generalized gradient" as
+$$G_\gamma(x) = \frac{x - \textrm{prox}_{h,\gamma}(x - \gamma \nabla g(x))}{\gamma}$$.
+
+Then Proximal GD is (in 1 step):
+$$x^{(k)} = x^{(k)} - \gamma G_\gamma(x^{(k)})$$
+
+We use this definition for **backtracking** (on $g$ only): shrink if
+$$g\left(x- \gamma G_\gamma(x)\right) > g(x) - \gamma \nabla g(x)^\top G_\gamma(x) + \gamma \alpha \norm{G_\gamma(x)}_2^2$$
+
+* There are other formulations to avoid frequent evalutations of prox
+
+For **acceleration**, need to express differently than last time (set $x^{(0)} = x^{(-1)}$):
+1. $v \leftarrow x^{(k-1)} + \frac{k-2}{k+1} (x^{(k-1)} - x^{(k-2)})$
+2. $x^{(k)} \leftarrow \textrm{prox}_{h,\gamma} (v - \gamma \nabla g(v))$
+
+---
+
+## Stochastic gradient descent
+
+- Workhorse in Neural Networks
+- Suppose $$f(x) = \frac{1}{n} \sum_{i=1}^n f_i(x)$$
+- GD would use 
+$$x^{(k)} = x^{(k-1)} - \frac{\gamma}{n} \sum_{i=1}^n \nabla f_i(x^{(k-1)})$$
+- SGD uses
+$$x^{(k)} = x^{(k-1)} - \gamma \nabla f_{i_k}(x^{(k-1)})$$
+$i_k\in\{1,\ldots,n\}$ is an index chosen at time $k$.
+
+---
+
+## Choosing the batches
+
+Standard choices for $i_k$
+
+1. Draw $i_k\sim \textrm{Unif}(\{1,\ldots,n\})$.
+2. Set $i_k=1,\ldots,n,1,\ldots,n,1,\ldots,n,\ldots$ (or a random permutation of these)
+
+Most frequently update "mini-batches". 
+
+3. Split $\{1,\ldots,n\}$ into $l$ "blocks" that don't overlap.
+
+Why?
+1. Convergence rates are slower for SGD than GD.
+2. Batches improves this.
+3. SGD is computationally more efficient in per-iteration cost, memory
+4. Efficient when far from the optimum, less good close to the optimum (but statistical properties don't care when you're close)
+
+
+---
+
+## Returning to our example
+
+```{r, eval=FALSE}
+Xy <- crossprod(X,y) / n # depends on the sum
+XX <- crossprod(X) / n # depends on the sum
+maxit <- 200
+gamma <- .05
+bhat <- matrix(0, p, maxit)
+grad <- function(b) - (Xy - XX %*% b) # no longer depends on the sum
+for (i in 2:maxit) {
+  g <- grad(bhat[,i-1]) # no longer depends on the sum
+  prop <- bhat[,i-1] - gamma * g
+  prop[prop > 1] <- 1 
+  prop[prop < -1] <- -1
+  bhat[,i] <- prop
+  if (sum(g^2) < 1e-4) break
+}
+```
+
+
+---
+
+## What about the naive version?
+
+```{r, eval=FALSE}
+maxit <- 200
+gamma <- .05
+bhat <- matrix(0, p, maxit)
+grad <- function(b) - t(X) %*% (y - X %*% b) / n # depends on the sum
+for (i in 2:maxit) {
+  g <- grad(bhat[,i-1]) # also depends on the sum
+  prop <- bhat[,i-1] - gamma * g
+  prop[prop > 1] <- 1 
+  prop[prop < -1] <- -1
+  bhat[,i] <- prop
+  if (sum(g^2) < 1e-4) break
+}
+```
+
+* Better to avoid the repeated calculations than to use SGD
+* But have to load all the data into memory.
