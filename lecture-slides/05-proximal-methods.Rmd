@@ -69,7 +69,7 @@ If not differentiable, used subgradient
 
 2. $f(x) = g(x) + h(x)$ with certain "nice" $g$ and $h$
 
-3. $f(x) = \sum_{i=1}^n f(x_i)$
+3. $f(x) = \sum_{i=1}^n f_i(x)$
 
 
 ---
