@@ -263,7 +263,7 @@ $$
 
 - For feasible $x$, $v\geq 0$
 $$
-f(x) \geq f(x) + u^\top h(x) + v^\top (Ax - b) \geq \min_x L(x,u,v) = g(u,v).
+f(x) \geq f(x) + u^\top (Ax-b) + v^\top h(x) \geq \min_x L(x,u,v) = g(u,v).
 $$
 
 - Therefore,
@@ -355,7 +355,7 @@ $$x \in \partial f^*(y) \Longleftrightarrow y \in \partial f(x)\Longleftrightarr
 ## Examples 
 
 
-*  $f(x) = x^\top Q x$ with $Q \succ 0$. We want $\max\limits_x y^T x - \frac{1}{2} x^\top Q x$
+*  $f(x) = \frac{1}{2} x^\top Q x$ with $Q \succ 0$. We want $\max\limits_x y^\top x - \frac{1}{2} x^\top Q x$
 
     Take partial derivative  and set to 0, 
 $$y - Qx = 0 \Longrightarrow Q^{-1} y = x^* \Longrightarrow f^*(y) = \frac{1}{2} y^\top Q^{-1} y$$
