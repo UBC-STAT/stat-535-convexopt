@@ -16,7 +16,7 @@ icon: "far fa-calendar-alt"
 |20 Jan | [GD and subgradients](slides/04-gradient-descent.html) | [Lasso regression w/ GD](https://learning.github.ubc.ca/STAT-535A-201-2020W/lasso-gd) | P1 due |
 |25 Jan | [Prox GD and SGD](slides/05-proximal-methods.html) | [ISTA](https://learning.github.ubc.ca/STAT-535A-201-2020W/ista-fista) |
 |27 Jan | [Duality](slides/06-duality.html) | [find the dual](https://learning.github.ubc.ca/STAT-535A-201-2020W/find-the-dual) |  HW 1 due (1/31 @ 23:59)
-|01 Feb | KKT conditions |      | |
+|01 Feb | [KKT conditions](slides07-kkt-conditions.html) | Practice quiz  | |
 |03 Feb | ADMM and CD | Lasso exercise |
 |08 Feb | Strong rules and paths | Path for lasso |
 |10 Feb | Newton's method | Newton vs GD | HW 2 due (2/15 @ 23:59)
