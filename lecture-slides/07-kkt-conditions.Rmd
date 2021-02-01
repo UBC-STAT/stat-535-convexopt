@@ -216,7 +216,7 @@ $$L(\beta, z, u) = \frac{1}{2n}\norm{y-z}_2^2 + \lambda\norm{\beta}_1 + u^\top(X
 $$g(u) = \min_{\beta,z} L(\beta,z,u) = \frac{1}{2}\norm{y}_2^2 - \underbrace{\frac{1}{2}\norm{y-u}_2^2 - I\left(\norm{X^\top u}_\infty < \lambda\right)}_{\textrm{using conjugate trick}}$$
 
 Dual problem is
-$$\max_u \frac{1}{2n}\norm{y-u}_2^2 \quad\textrm{subject to}\quad \norm{X^\top u}_\infty \leq \lambda$$
+$$\min_u \frac{1}{2n}\norm{y-u}_2^2 \quad\textrm{subject to}\quad \norm{X^\top u}_\infty \leq \lambda$$
 
 $u=0$ is strictly feasible, so Slater's implies strong duality (but I changed the dual objective)
 
@@ -272,7 +272,7 @@ Lagrangian form (**L**): $$\begin{aligned}
 --
 
 When **C** is strictly feasible, strong duality holds (Slater). So there exists
-$\lambda$ such that for each $x$ that solves **C** those $x$ minimize **L** (for some $\lambda$).
+$\lambda$ such that for each $x$ that solves **C** those $x$ minimize **L**.
 
 --
 

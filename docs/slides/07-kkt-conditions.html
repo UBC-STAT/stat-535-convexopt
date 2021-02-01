@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 # 07 KKT conditions
 ### STAT 535A
 ### Daniel J. McDonald
-### Last modified - 2021-01-31
+### Last modified - 2021-02-01
 
 ---
 
@@ -229,7 +229,7 @@ Thus, `\(x\)` is a solution iff it solves the system for some `\(u\)`.
 `$$g(u) = \min_{\beta,z} L(\beta,z,u) = \frac{1}{2}\norm{y}_2^2 - \underbrace{\frac{1}{2}\norm{y-u}_2^2 - I\left(\norm{X^\top u}_\infty &lt; \lambda\right)}_{\textrm{using conjugate trick}}$$`
 
 Dual problem is
-`$$\max_u \frac{1}{2n}\norm{y-u}_2^2 \quad\textrm{subject to}\quad \norm{X^\top u}_\infty \leq \lambda$$`
+`$$\min_u \frac{1}{2n}\norm{y-u}_2^2 \quad\textrm{subject to}\quad \norm{X^\top u}_\infty \leq \lambda$$`
 
 `\(u=0\)` is strictly feasible, so Slater's implies strong duality (but I changed the dual objective)
 
@@ -285,7 +285,7 @@ Lagrangian form (**L**): $$\begin{aligned}
 --
 
 When **C** is strictly feasible, strong duality holds (Slater). So there exists
-`\(\lambda\)` such that for each `\(x\)` that solves **C** those `\(x\)` minimize **L** (for some `\(\lambda\)`).
+`\(\lambda\)` such that for each `\(x\)` that solves **C** those `\(x\)` minimize **L**.
 
 --
 
