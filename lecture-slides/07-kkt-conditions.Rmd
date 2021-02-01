@@ -1,0 +1,282 @@
+---
+title: "07 KKT conditions"
+author: 
+  - "STAT 535A"
+  - "Daniel J. McDonald"
+date: 'Last modified - `r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+source("rmd_config.R")
+```
+
+## Last time
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+
+
+Given the generic (primal) convex program
+
+$$
+\begin{aligned}
+\min_x &\quad f(x)\\
+\textrm{s.t} &\quad Ax=b\\
+&\quad h_i(x)\leq 0
+\end{aligned}
+$$
+
+- Defined the **Lagrangian**
+$$
+L(x,u,v) = f(x) + u^\top (Ax-b) + v^\top h(x) 
+$$
+
+- The **Lagrange dual** function
+$$g(u,v) = \min_x L(x,u,v)$$
+
+- Leads to the dual problem
+$$\begin{aligned}\max_{u,v} &\quad g(u,v)\\ \textrm{s.t.} &\quad v \geq 0\end{aligned}$$
+
+---
+
+## Properties
+
+$$\begin{aligned}\max_{u,v} &\quad g(u,v)\\ \textrm{s.t.} &\quad v \geq 0\end{aligned}$$
+
+- Dual problem is always convex (dual function is always concave)
+
+- The primal and dual optimal values satisfy $f^* \geq g^*$ (weak duality)
+
+- Slater's condition: convex primal and feasible $x$ such that any (non-affine) inequalities are strict, then $f^*=g^*$
+
+---
+
+## Today
+
+1. KKT conditions
+
+2. examples
+
+3. Constrained and Lagrange forms and correspondences
+
+
+---
+
+## KKT conditions
+
+$$
+\begin{aligned}
+\min_x &\quad f(x)\\
+\textrm{s.t} &\quad Ax-b=0\\
+&\quad h_i(x)\leq 0
+\end{aligned}
+$$
+
+
+1. Stationarity: $0 \in \partial_x \left(f(x)+v^\top h(x)+u^\top (Ax-b)\right)$
+
+    Means: for some pair $(u,v)$, $x$ minimizes the Lagrangian
+
+2. Complementary slackness: $v_ih_i(x)=0 \,\,\, , \forall i$
+
+3. Primal feasibility: $h_i(x) \le 0 \,\,,\,\, Ax=b$
+
+4. Dual feasibility: $v \ge 0$
+
+---
+
+## Necessity
+
+**Result:** If $x^*$ and $(u^*,v^*)$ are optimal (therefore feasible) and $f^*=g^*$, then they satisfy KKT conditions.
+
+--- 
+
+**Proof:** 
+
+$$\begin{aligned}
+f(x^*)=g(u^*,v^*) & \le \min_x f(x)+v^\top h(x)+u^\top(Ax-b)\\
+                  & \le f(x^*)+{v^*}^\top h(x^*)+{u^*}^\top (Ax^*-b)\\
+                  & \le f(x^*)
+\end{aligned}$$
+
+--
+
+- So all $\le$'s are $=$.
+
+- From the second (in)equality we see that $x^*$ is the minimizer of the Lagrangian. 
+
+- From the last (in)equality we see that ${v^*}^\top h(x^*)=0$ and we have $v^* \ge 0$ and
+so we get the complementary slackness.
+
+- We didn't assume anything about convexity of $f$ or $h_i$
+
+---
+
+## Sufficiency
+
+**Result:** If there exist $x^*$ and $(u^*,v^*)$ satisfy the KKT conditions, then they are primal/dual optimal.
+
+--- 
+
+**Proof:**
+
+$$\begin{aligned}g(u^*,v^*) &= f(x^*)+{v^*}^\top h(x^*)+{u^*}^\top (Ax^*-b)\\
+&= f(x^*)\end{aligned}$$
+
+--
+
+- The first equality is by stationarity.
+
+- The second is complementary slackness.
+
+- Thus, the duality gap is 0. And they are primal/dual optimal.
+
+---
+
+## Implications
+
+1. KKT conditions $\Rightarrow$ 0 duality gap.
+
+2. If strong duality, then primal dual solutions satisfy KKT conditions.
+
+--
+
+**Warnings:**
+
+1. If $f$ is differentiable but isn't convex, then you can't look at $\nabla f$ for the stationarity condition.
+
+2. In unconstrained problems, KKT conditions reduce to stationarity (and feasibility). Many people say "by the KKT conditions..." what they mean is "by stationarity..."
+
+--
+
+**Failure of KKT**
+
+$$\begin{aligned}
+g(u^*,v^*) & \le \min_x f(x)+v^\top h(x)+u^\top(Ax-b)\\
+& \le f(x^*)+{v^*}^\top h(x^*)+{u^*}^\top (Ax^*-b)\\
+& \le f(x^*)
+\end{aligned}$$
+
+* If $x^*$ and $(u^*,v^*)$ are optimal (therefore feasible), then they satisfy KKT conditions (1), (3), (4). _Not complementary slackness_
+
+---
+
+## Simple example
+
+$$ \min_x \frac{1}{2}x^\top Qx + c^\top x \quad\textrm{subject to}\quad Ax=0$$
+
+Assume $Q$ psd
+
+$$L(x,u) = x^\top Qx + c^\top x + u^\top Ax$$
+
+--
+
+1. (Stationarity) $Qx + c + u^\top A = 0$.
+
+2. (Complementary slackness) nothing to do.
+
+3. (Primal feasibility) $Ax=0$
+
+4. (Dual feasibility) nothing to do.
+
+--
+
+Can combine all this into a system. KKT imply:
+
+$$\begin{bmatrix} Q & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} x \\ u \end{bmatrix} = \begin{bmatrix} -c \\ 0 \end{bmatrix}$$
+
+Thus, $x$ is a solution iff it solves the system for some $u$.
+
+---
+
+## Harder example (Lasso)
+
+$$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 + \lambda\norm{\beta}_1$$
+
+$$\Updownarrow$$
+
+$$\min_{\beta,z} \frac{1}{2n}\norm{y-z}_2^2 + \lambda\norm{\beta}_1 \quad\textrm{subject to}\quad X\beta = z$$
+
+--
+
+$$L(\beta, z, u) = \frac{1}{2n}\norm{y-z}_2^2 + \lambda\norm{\beta}_1 + u^\top(X\beta - z)$$
+
+$$g(u) = \min_{\beta,z} L(\beta,z,u) = \frac{1}{2}\norm{y}_2^2 - \underbrace{\frac{1}{2}\norm{y-u}_2^2 - I\left(\norm{X^\top u}_\infty < \lambda\right)}_{\textrm{using conjugate trick}}$$
+
+Dual problem is
+$$\max_u \frac{1}{2n}\norm{y-u}_2^2 \quad\textrm{subject to}\quad \norm{X^\top u}_\infty \leq \lambda$$
+
+$u=0$ is strictly feasible, so Slater's implies strong duality (but I changed the dual objective)
+
+---
+
+**KKT conditions for primal:**
+
+1. $\frac{1}{n} (X^\top(y-X\beta))_j = \lambda \tau_j$ with $\tau_j \in \partial |\beta_j|$
+
+2. nothing to do
+
+3. nothing to do
+
+4. nothing to do
+
+--
+
+$\Rightarrow$ Says that $|(X^\top(y-X\beta))_j| = n\lambda$ with equality whenever $|\beta_j| > 0$
+
+--
+
+**KKT conditions for transformed version:**
+
+1. $\partial_z\left(\norm{y-z}_2^2 + \lambda\norm{\beta}_1 +u^\top(X\beta - z)\right)=0$ and  $\partial_\beta\left(\norm{y-z}_2^2 + \lambda\norm{\beta}_1 +u^\top(X\beta - z)\right)=0$
+
+2. nothing to do
+
+3. $X\beta = z$
+
+4. nothing to do
+
+--
+
+This stationarity condition tells us that: given $u^*$, $X\beta^* = y - u^*$
+
+If dual is easier to solve, then do that and recover the primal (because of strong duality)
+
+---
+
+## Constraints and Lagrangians
+
+When are the two following forms equivalent?
+
+constrained form (**C**): $$\begin{aligned}
+        \min f(x)\\
+        s.t. \,\, h(x) \le t
+    \end{aligned}$$
+
+Lagrangian form (**L**): $$\begin{aligned}
+    \min f(x)+\lambda h(x)
+    \end{aligned}$$
+
+--
+
+When **C** is strictly feasible, strong duality holds (Slater). So there exists
+$\lambda$ such that for each $x$ that solves **C** those $x$ minimize **L** (for some $\lambda$).
+
+--
+
+Now, if $x^*$ solves **L**, then KKT conditions for **C** hold by taking
+$t=h(x^*)$ and so $x^*$ is a solution of **C**.
+
+
