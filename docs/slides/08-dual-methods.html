@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>08 Dual methods</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 08 Dual methods
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-02-02
+
+---
+
+
+
+
+## Last time
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+.pull-left[
+
+$$
+`\begin{aligned}
+\min_x &amp;\quad f(x)\\
+\textrm{s.t} &amp;\quad Ax-b=0\\
+&amp;\quad h_i(x)\leq 0
+\end{aligned}`
+$$
+
+
+1. Stationarity: `\(0 \in \partial_x \left(f(x)+v^\top h(x)+u^\top (Ax-b)\right)\)`
+
+    Means: for some pair `\((u,v)\)`, `\(x\)` minimizes the Lagrangian
+
+2. Complementary slackness: `\(v_ih_i(x)=0 \,\,\, , \forall i\)`
+
+3. Primal feasibility: `\(h_i(x) \le 0 \,\,,\,\, Ax=b\)`
+
+4. Dual feasibility: `\(v \ge 0\)`
+
+]
+
+--
+
+.pull-right[
+
+**Nice properties of the dual**
+
+`$$\begin{aligned}\max_{u,v} &amp;\quad g(u,v)\\ \textrm{s.t.} &amp;\quad v \geq 0\end{aligned}$$`
+
+- Dual problem is always convex (dual function is always concave)
+
+- The primal and dual optimal values satisfy `\(f^* \geq g^*\)` (weak duality)
+
+- Slater's condition: convex primal and feasible `\(x\)` such that any (non-affine) inequalities are strict, then `\(f^*=g^*\)`
+
+]
+
+---
+
+## Today
+
+1. First-order methods for the dual
+
+2. Decomposability
+
+3. Alternating direction method of multipliers
+
+4. Coordinate descent
+
+
+---
+
+## Dual (sub)gradient ascent/descent
+
+.pull-left[
+
+**Primal problem:**
+`$$\min_x f(x) \st Ax=b.$$` 
+
+]
+
+.pull-right[
+
+**Dual problem:**
+`$$\max_u g(u) = -f^*(-A^\top u)+b^\top u,$$` 
+where `\(f^*\)` is the __conjugate__ of `\(f\)`. 
+
+]
+
+--- 
+
+- The subdifferential is given by
+`$$\partial g(u)= A\partial f^*(-A^\top u)-b^\top u,$$` 
+
+- But recall (properties of conjugates), 
+`\(x\in\arg\min_z f(z) + u^\top (Ax-b)\)` then `\(\partial g(u)={Ax-b}\)`. 
+
+- We may solve this as
+follows:
+    1. guess initial `\(u^{(0)}\)` 
+    2. choose `\(x^{(k)}\in\arg\min_x f(x) + (u^{(k-1)})^\top Ax\)`
+    3. Update `\(u^{(k)} = u^{(k-1)} + \gamma\left(Ax^{(k)}-b\right)\)`
+    
+---
+
+## Why?
+
+Assume `\(g\)` differentiable:
+
+`$$\nabla g(u) = \frac{\partial}{\partial y} \min_x L(x,u) = A x^{*} - b$$`
+
+Then we do Gradient Ascent on `\(g\)` (we just need `\(x^*\)` first).
+
+
+We can choose `\(\gamma\)` as before and apply proximal methods (or
+acceleration).
+
+--
+
+* If `\(g\)` is not differentiable, `\(Ax - b\)` is then the subgradient of `\(-g\)` `\(\Longrightarrow\)` *dual subgradient ascent*
+
+* Under conditions (non-trivial), both `\(x^{(k)}\)` and `\(u^{(k)}\)` converge to the primal/dual optimzers.
+
+
+
+---
+
+## Decomposable dual
+
+`$$\min_x \sum_{i=1}^m f_i(x_i) \st Ax=b$$`
+  
+Lagrangian can separate: 
+`$$x^+\in\arg\min_{x}\sum_{i=1}^m f_i(x_i) + u^\top Ax
+\quad\Longleftrightarrow\quad x^+_i\in\arg\min_{x_i} f_i(x_i) + u^\top A_i x_i$$`
+
+--
+
+So we can iterate:
+$$
+`\begin{aligned}
+x_i^{(k)}&amp;\in\arg\min_{x_i}f_i(x_i)+(u^{(k-1)})^\top A_i x_i\\ 
+u^{(k)} &amp;= u^{(k-1)}+\gamma\left(A x^{(k)}-b \right)
+\end{aligned}`
+$$
+
+* The first is done individually 
+
+* The second gathers the results, and then broadcasts `\(u\)` back to the workers
+
+---
+
+`$$\min_x \sum_{i=1}^m f_i(x_i) \st Ax=b$$`
+  
+So we can iterate:
+$$
+`\begin{aligned}
+x_i^{(k)}&amp;\in\arg\min_{x_i}f_i(x_i)+(u^{(k-1)})^\top A_i x_i\\ 
+u^{(k)} &amp;= u^{(k-1)}+\gamma\left(A x^{(k)}-b \right)
+\end{aligned}`
+$$
+
+
+
+- Strong duality holds in this particular example since we have no inequality constraints.
+
+- If the constraints are inequalities, i.e. `\(Ax\leq b\)`, then use
+
+`$$u^{(k)} = \left(u^{(k-1)}+\gamma\left(A x^{(k)}-b \right)\right)_+$$`
+
+---
+
+## Augmented Lagrangian
+
+- For for dual ascent to work ( `\(\to g^*\)` ), we need `\(f\)` "nice" 
+
+- To achieve strong duality (primal optimality) the program must also satisfy one of the conditions mentioned earlier (e.g. Slater's condition).
+
+
+We can alter the problem to enforce strong convexity
+
+- Use `\(\min_x f(x)+\frac{\rho}{2}||Ax-b||_2^2 \st Ax=b\)`.  
+
+- The objective is strongly convex if `\(A\)` has full column rank.  
+
+- Dual gradient ascent then becomes
+    
+`$$\begin{aligned}
+x^{(k)}&amp;=\arg\min_x f(x)+(u^{(k-1)})^\top Ax+\frac{\rho}{2}\norm{Ax-b}_2^2\\ 
+u^{(k)} &amp;= u^{(k-1)}+\rho(Ax^{(k-1)}-b) 
+\end{aligned}$$`
+
+--
+    
+- Replacing the step size `\(\gamma\)` with `\(\rho\)` gives better convergence properties than the original DGA.  
+
+- But introducing the norm kills decomposability (if we had it), no parallelization
+
+- `\(\rho\)` balances primal feasibility with a small objective 
+
+- larger `\(\rho\)` deemphasizes objective but forces `\(x^{(k)}\)` toward primal feasiblity
+
+---
+
+## Alternating Direction Method of Multipliers (ADMM)
+
+* **Goal:** Combine decomposibility of dual ascent with convergence benefits of AL
+
+* Start with
+
+`$$\min_{x,z}f(x)+g(z) \st Ax+Bz=c$$`
+
+* Add `\(\frac{\rho}{2}\norm{Ax+Bz-c}_2^2\)` to the objective, penalizing infeasibility:
+
+`$$L_\rho(x,z,u)=f(x)+g(z)+u^T(Ax+Bz-c) + \frac{\rho}{2}\norm{Ax+Bz-c}_2^2$$`
+
+
+Iteratively update:
+`$$\begin{aligned}
+  x^{(k)}&amp;=\arg\min_xL_\rho(x,z^{(k-1)},u^{(k-1)})\\
+z^{(k)}&amp;=\arg\min_zL_\rho(x^{(k-1)},z,u^{(k-1)})\\
+u^{(k)} &amp;= u^{(k-1)}+\rho(Ax^{(k)}+Bz^{(k)}-c)\\
+\end{aligned}$$`
+
+---
+
+The above is the "standard" form, but the intuition is as follows:
+
+1. Start with `\(\min_x f(x)\)`.
+
+2. Add new variables that "split" `\(f\)`: `\(\min_{y,z} h(y) + g(z) \quad \textrm{s.t.}\quad y=z\)`.
+
+3. Iteratively update 
+`$$\begin{aligned}
+y^{(k)}&amp;=\arg\min_y h(y) +  (u^{(k-1)})^\top y + \frac{\rho}{2}\norm{y-z^{(k-1)} + u^{(k-1)}}_2^2\\
+z^{(k)}&amp;=\arg\min_z  g(z) +  (u^{(k-1)})^\top z + \frac{\rho}{2}\norm{y^{(k-1)}-z + u^{(k-1)}}_2^2\\
+u^{(k)} &amp;= u^{(k-1)}+\rho(y^{(k)}-z^{(k)})\\
+\end{aligned}$$`
+ 
+
+--
+
+Properties of ADMM (some of which do not require `\(A\)` and `\(B\)` to be full
+rank):
+
+1.  `\(Ax^{(k)}+Bz^{(k)}-c\to 0\)` as `\(k\to\infty\)` (primal feasibility)
+2.  `\(f^{(k)}+g^{(k)}\to f^*+g^*\)` (primal optimality)
+3.  `\(u^{(k)}\to u^*\)` (dual solution)
+4.  doesn't necessarily give `\(x^{(k)}\to x^*\)` and `\(z^{(k)}\to z^*\)`
+
+- The exact convergence rate is unknown, but empirically seems close to
+`\(O(1/\epsilon)\)`.
+
+---
+
+
+## Example (LASSO)
+
+`$$\min_\beta \frac{1}{2}\norm{y-X\beta}_2^2 +\lambda\norm{\alpha}_1 \st \alpha=\beta$$`
+
+ADMM update (compare with ridge regression): 
+
+`$$\begin{aligned}
+  \beta^{(k)}&amp;=\left(X^TX+\rho I\right)^{-1}\left(X^Ty+\rho(\alpha^{(k-1)}-w^{(k-1)})\right)\\ 
+  \alpha^{(k)}&amp;=S_{\lambda/\rho}(\beta^{(k)}+w^{(k-1)})\\
+  w^{(k)}&amp;=w^{(k-1)}+\beta^{(k)}-\alpha^{(k)}\\\end{aligned}$$`
+  
+- There's an "equivalence" between `\(\beta\)` and `\(\alpha\)`. You use `\(\alpha\)` as the solution.
+
+- Received wisdom: ADMM can make hard problems "easy".
+
+Issues with ADMM:
+
+-   How to choose `\(\rho\)`. There are good heuristics. See [Boyd, et al. "Distributed optimization and Statistical Learning via ADMM"](https://doi.org/10.1561/2200000016)
+
+-   Different ADMM formulations of the problem may have different
+    convergence properties.
+
+    
+---
+    
+## Coordinate descent
+
+- Works well with LASSO (and other penalized regression-type problems).
+
+- If `\(f(x)=g(x)+\sum_{i=1}^nh_i(x_i)\)` where `\(g\)` is convex and differentiable, `\(h\)` merely convex
+
+Then:
+
+1. Choose `\(x^{(0)}\)`.  
+
+2. Update according to:
+`$$\begin{aligned}
+x_1^{(k)}&amp;\in \arg\min_{x_1} f(x_1,x_2^{(k-1)},...,x_n^{(k-1)})\\
+x_2^{(k)}&amp;\in \arg\min_{x_2} f(x_1^{(k)},x_2,...,x_n^{(k-1)})\\
+&amp;\quad \vdots\\
+x_n^{(k)}&amp;\in \arg\min_{x_2} f(x_1^{(k)},x_2^{(k)},...,x_n)
+\end{aligned}$$`
+
+3. Repeat **2** until convergence.
+---
+
+## Example (LASSO)
+
+This is what `glmnet` does (+ more bells and whistles)
+$$\min_\beta \frac{1}{2}\norm{y-X\beta}_2^2 +\lambda\norm{\beta}_1 $$
+
+- `\(\norm{\beta}_1 = \sum_{i=1}^p |\beta_i|\)`
+
+- Iterate over `\(p\)` 
+`$$\beta_i\leftarrow S_{\lambda/\norm{X_i}_2^2}\left(\frac{X_i^T(y-X_{-i}\beta_{-i})}{X_i^\top X_i}\right)$$`
+
+- Comes from taking derivative of objective wrt `\(\beta_i\)`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
