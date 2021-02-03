@@ -227,41 +227,90 @@ $$L_\rho(x,z,u)=f(x)+g(z)+u^T(Ax+Bz-c) + \frac{\rho}{2}\norm{Ax+Bz-c}_2^2$$
 Iteratively update:
 $$\begin{aligned}
   x^{(k)}&=\arg\min_xL_\rho(x,z^{(k-1)},u^{(k-1)})\\
-z^{(k)}&=\arg\min_zL_\rho(x^{(k-1)},z,u^{(k-1)})\\
+z^{(k)}&=\arg\min_z L_\rho(x^{(k-1)},z,u^{(k-1)})\\
 u^{(k)} &= u^{(k-1)}+\rho(Ax^{(k)}+Bz^{(k)}-c)\\
 \end{aligned}$$
 
+
 ---
 
-The above is the "standard" form, but the intuition is as follows:
-
-1. Start with $\min_x f(x)$.
-
-2. Add new variables that "split" $f$: $\min_{y,z} h(y) + g(z) \quad \textrm{s.t.}\quad y=z$.
-
-3. Iteratively update 
-$$\begin{aligned}
-y^{(k)}&=\arg\min_y h(y) +  (u^{(k-1)})^\top y + \frac{\rho}{2}\norm{y-z^{(k-1)} + u^{(k-1)}}_2^2\\
-z^{(k)}&=\arg\min_z  g(z) +  (u^{(k-1)})^\top z + \frac{\rho}{2}\norm{y^{(k-1)}-z + u^{(k-1)}}_2^2\\
-u^{(k)} &= u^{(k-1)}+\rho(y^{(k)}-z^{(k)})\\
-\end{aligned}$$
- 
-
---
+## Properties
 
 Properties of ADMM (some of which do not require $A$ and $B$ to be full
 rank):
 
 1.  $Ax^{(k)}+Bz^{(k)}-c\to 0$ as $k\to\infty$ (primal feasibility)
+
 2.  $f^{(k)}+g^{(k)}\to f^*+g^*$ (primal optimality)
+
 3.  $u^{(k)}\to u^*$ (dual solution)
+
 4.  doesn't necessarily give $x^{(k)}\to x^*$ and $z^{(k)}\to z^*$
 
-- The exact convergence rate is unknown, but empirically seems close to
+The exact convergence rate is unknown, but empirically seems close to
 $O(1/\epsilon)$.
+
+--
+
+Stopping criteria:
+
+Primal residual: $Ax^{(k)}+Bz^{(k)}-c \leq \epsilon$
+
+Dual residual: $\rho A^\top B (z^{(k)}-z^{(k-1)}) \leq \epsilon$
 
 ---
 
+## Scaled form
+
+$$L_\rho(x,z,u)=f(x)+g(z)+u^T(Ax+Bz-c) + \frac{\rho}{2}\norm{Ax+Bz-c}_2^2$$
+
+* Expand out the quadratic in the AL, and combine with the linear part
+
+* Redefine $w = u/\rho$ and simplify
+
+$$L_\rho(x,z,w)=f(x)+g(z)+\frac{\rho}{2}\norm{Ax+Bz-c+w}_2^2-\frac{\rho}{2}\norm{w}_2^2$$
+
+--
+
+Updates become:
+
+$$\begin{aligned}
+  x^{(k)}&=\arg\min_x f(x) + \frac{\rho}{2}\norm{Ax+Bz^{(k-1)}-c+w^{(k-1)}}_2^2\\
+z^{(k)}&=\arg\min_z g(z) + \frac{\rho}{2}\norm{Ax^{(k)}+Bz-c+w^{(k-1)}}_2^2\\
+w^{(k)} &= w^{(k-1)} + Ax^{(k)} + Bz^{(k)} - c\\
+\end{aligned}$$
+
+---
+
+## Connection to proximal operator
+
+
+The above is the "standard" version, but the intuition is as follows:
+
+1. Start with $\min_x f(x)$.
+
+2. Add new variables that "split" $f$: $\min_{y,z} h(y) + g(z) \quad \textrm{s.t.}\quad y=z$.
+
+3. Iteratively update (scaled form)
+$$\begin{aligned}
+y^{(k)}&=\arg\min_y h(y) + \frac{\rho}{2}\norm{y-z^{(k-1)} + w^{(k-1)}}_2^2\\
+z^{(k)}&=\arg\min_z  g(z)  + \frac{\rho}{2}\norm{y^{(k)} - z + w^{(k-1)}}_2^2\\
+w^{(k)} &= w^{(k-1)}+y^{(k)}-z^{(k)}\\
+\end{aligned}$$
+ 
+--
+
+Done this way, with the split(s) corresponding to an identity
+
+$$\begin{aligned}
+y^{(k)}&=\textrm{prox}_{f,1/\rho}(z^{(k-1)} - w^{(k-1)})\\
+z^{(k)}&=\textrm{prox}_{g,1/\rho}(y^{(k)} + w^{(k-1)})\\
+w^{(k)} &= w^{(k-1)}+y^{(k)}-z^{(k)}\\
+\end{aligned}$$
+
+This is called "Douglas-Rachford Splitting"
+
+---
 
 ## Example (LASSO)
 
@@ -282,8 +331,11 @@ Issues with ADMM:
 
 -   How to choose $\rho$. There are good heuristics. See [Boyd, et al. "Distributed optimization and Statistical Learning via ADMM"](https://doi.org/10.1561/2200000016)
 
+- For problems like DR, it seems like $\rho=\lambda$ works well.
+
 -   Different ADMM formulations of the problem may have different
     convergence properties.
+
 
     
 ---
@@ -307,6 +359,7 @@ x_n^{(k)}&\in \arg\min_{x_2} f(x_1^{(k)},x_2^{(k)},...,x_n)
 \end{aligned}$$
 
 3. Repeat **2** until convergence.
+
 ---
 
 ## Example (LASSO)
@@ -320,3 +373,13 @@ $$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\beta}_1 $$
 $$\beta_i\leftarrow S_{\lambda/\norm{X_i}_2^2}\left(\frac{X_i^T(y-X_{-i}\beta_{-i})}{X_i^\top X_i}\right)$$
 
 - Comes from taking derivative of objective wrt $\beta_i$
+
+- This works because the univariate update is closed-form, exact
+
+--
+
+Most coefficients are usually zero, so most of the coordinates stay zero always
+
+Talking with people who "do" optimization, using CD is often baffling.
+
+Historically, it took almost 15 years to realize that CD was the "way" to solve this problem
