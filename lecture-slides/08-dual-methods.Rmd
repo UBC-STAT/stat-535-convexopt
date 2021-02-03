@@ -265,12 +265,12 @@ $O(1/\epsilon)$.
 
 ## Example (LASSO)
 
-$$\min_\beta \frac{1}{2}\norm{y-X\beta}_2^2 +\lambda\norm{\alpha}_1 \st \alpha=\beta$$
+$$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\alpha}_1 \st \alpha=\beta$$
 
 ADMM update (compare with ridge regression): 
 
 $$\begin{aligned}
-  \beta^{(k)}&=\left(X^TX+\rho I\right)^{-1}\left(X^Ty+\rho(\alpha^{(k-1)}-w^{(k-1)})\right)\\ 
+  \beta^{(k)}&=\left(\frac{1}{n}X^\top X+\rho I\right)^{-1}\left(\frac{1}{n}X^\top y+\rho(\alpha^{(k-1)}-w^{(k-1)})\right)\\ 
   \alpha^{(k)}&=S_{\lambda/\rho}(\beta^{(k)}+w^{(k-1)})\\
   w^{(k)}&=w^{(k-1)}+\beta^{(k)}-\alpha^{(k)}\\\end{aligned}$$
   
@@ -312,7 +312,7 @@ x_n^{(k)}&\in \arg\min_{x_2} f(x_1^{(k)},x_2^{(k)},...,x_n)
 ## Example (LASSO)
 
 This is what `glmnet` does (+ more bells and whistles)
-$$\min_\beta \frac{1}{2}\norm{y-X\beta}_2^2 +\lambda\norm{\beta}_1 $$
+$$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\beta}_1 $$
 
 - $\norm{\beta}_1 = \sum_{i=1}^p |\beta_i|$
 
