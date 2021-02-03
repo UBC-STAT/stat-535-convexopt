@@ -14,7 +14,8 @@ Website: <https://dajmcdon.github.io/>
 Email: <daniel@stat.ubc.ca>  
 
 __Office hours__:    
-TBA   
+Mon 15:00 - 16:00 as necessary   
+I'm happy to arrange additional time. Just message me on Slack.   
 
 
 __Course webpage__:    
@@ -69,7 +70,7 @@ Little quiz, 10 points
 Project, 35 points (+ 5 bonus in rare cases)
 Professionalism, +/- 5 points
 
-The maximum score is 95 unless you achieve the bonus or display excellent professionalism. Excellent professionalism means going above and beyond in terms of in-class participation and contributions on the discussion board. Regularly responding to fellow students is a step toward the bonus. Bonus points are rare and will be reserved for excellence. Most students will receive a 0 for their processionalism score. Failing to participate in class, regularly skipping class, leaving your project team out to dry, will result in reduced scores. This should also be rare
+The maximum score is 95 unless you achieve the bonus or display excellent professionalism. Excellent professionalism means going above and beyond in terms of in-class participation and contributions on the discussion board. Regularly responding to fellow students is a step toward the bonus. Bonus points are rare and will be reserved for excellence. Most students will receive a 0 for their processionalism score. Failing to participate in class, regularly skipping class, leaving your project team out to dry, will result in reduced scores. This should also be rare.
 
 #### Lectures and In-class activites
 
@@ -81,7 +82,7 @@ On February 22 (at the beginning of class) there will be an (individual) little 
 
 #### Homework assignments
 
-There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 20 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 0/5/10/15 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * .8^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay. Revisions after 1 week will receive no credit.
+There will be 2 individual homework assignments. The first is due at the end of the 3rd week (January 31 23:59 ) and the second is due at the end of the 5th week (February 12). Each is worth 15 points. You will have up to 1 week to complete any requested revisions. Initial submissions will receive 0/5/10/15 points with revisions allowing you to get back 80% of missed credit. Late submissions will receive `score * .8^n` where `n` is the number of days late unless I am notified in advance of the due date and approve the reason for the delay. Revisions after 1 week will receive no credit.
 
 Discussing assignments with your classmates is allowed and encouraged, but it is important that every student get practice working on these problems. This means that **all the work you turn in must be your own**. The general policy on homework collaboration is:
 1. You must first make a serious effort to solve the problem.
@@ -95,7 +96,7 @@ You may not use homework help websites, Stack Overflow, and so on under any circ
 
 You can always, of course, ask me for help on Slack. And public Slack **questions** are allowed and encouraged. 
 
-You may also use external sources (books, websites, papers, …) to
+You may also use external sources (books, websites, papers, ...) to
 * Look up programming language documentation, find useful packages, find explanations for error messages, or remind yourself about the syntax for some feature. I do this all the time in the real world. Wikipedia is your friend.
 * Read about general approaches to solving specific problems (e.g. a guide to dynamic programming or a tutorial on unit testing in your programming language), or
 * Clarify material from the course notes or assignments.

@@ -117,7 +117,7 @@ follows:
 
 Assume $g$ differentiable:
 
-$$\nabla g(u) = \frac{\partial}{\partial y} \min_x L(x,u) = A x^{*} - b$$
+$$\nabla g(u) = \frac{\partial}{\partial u} \min_x L(x,u) = A x^{*} - b$$
 
 Then we do Gradient Ascent on $g$ (we just need $x^*$ first).
 
@@ -226,8 +226,8 @@ $$L_\rho(x,z,u)=f(x)+g(z)+u^T(Ax+Bz-c) + \frac{\rho}{2}\norm{Ax+Bz-c}_2^2$$
 
 Iteratively update:
 $$\begin{aligned}
-  x^{(k)}&=\arg\min_xL_\rho(x,z^{(k-1)},u^{(k-1)})\\
-z^{(k)}&=\arg\min_z L_\rho(x^{(k-1)},z,u^{(k-1)})\\
+  x^{(k)}&=\arg\min_x L_\rho(x,z^{(k-1)},u^{(k-1)})\\
+z^{(k)}&=\arg\min_z L_\rho(x^{(k)},z,u^{(k-1)})\\
 u^{(k)} &= u^{(k-1)}+\rho(Ax^{(k)}+Bz^{(k)}-c)\\
 \end{aligned}$$
 
@@ -254,9 +254,9 @@ $O(1/\epsilon)$.
 
 Stopping criteria:
 
-Primal residual: $Ax^{(k)}+Bz^{(k)}-c \leq \epsilon$
+Primal residual: $\norm{Ax^{(k)}+Bz^{(k)}-c} \leq \epsilon$
 
-Dual residual: $\rho A^\top B (z^{(k)}-z^{(k-1)}) \leq \epsilon$
+Dual residual: $\rho \norm{A^\top B (z^{(k)}-z^{(k-1)})} \leq \epsilon$
 
 ---
 
@@ -314,7 +314,7 @@ This is called "Douglas-Rachford Splitting"
 
 ## Example (LASSO)
 
-$$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\alpha}_1 \st \alpha=\beta$$
+$$\min_{\beta,\alpha} \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\alpha}_1 \st \alpha=\beta$$
 
 ADMM update (compare with ridge regression): 
 
