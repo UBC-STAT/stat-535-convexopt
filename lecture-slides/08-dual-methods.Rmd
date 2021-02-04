@@ -370,7 +370,7 @@ $$\min_\beta \frac{1}{2n}\norm{y-X\beta}_2^2 +\lambda\norm{\beta}_1 $$
 - $\norm{\beta}_1 = \sum_{i=1}^p |\beta_i|$
 
 - Iterate over $p$ 
-$$\beta_i\leftarrow S_{\lambda/\norm{X_i}_2^2}\left(\frac{X_i^T(y-X_{-i}\beta_{-i})}{X_i^\top X_i}\right)$$
+$$\beta_i\leftarrow S_{\lambda/\frac{1}{n}\norm{X_i}_2^2}\left(\frac{X_i^T(y-X_{-i}\beta_{-i})}{X_i^\top X_i}\right)$$
 
 - Comes from taking derivative of objective wrt $\beta_i$
 
