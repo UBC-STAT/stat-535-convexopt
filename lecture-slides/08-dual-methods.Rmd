@@ -92,7 +92,7 @@ $$\min_x f(x) \st Ax=b.$$
 .pull-right[
 
 **Dual problem:**
-$$\max_u g(u) = -f^*(-A^\top u)+b^\top u,$$ 
+$$\max_u g(u) = -f^*(-A^\top u)-b^\top u,$$ 
 where $f^*$ is the __conjugate__ of $f$. 
 
 ]
