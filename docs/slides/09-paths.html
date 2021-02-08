@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>09 Paths and rules</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 09 Paths and rules
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-02-07
+
+---
+
+
+
+
+## So far
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+.pull-left[
+
+$$
+`\begin{aligned}
+\min_x &amp;\quad f(x)\\
+\textrm{s.t} &amp;\quad Ax-b=0\\
+&amp;\quad h_i(x)\leq 0
+\end{aligned}`
+$$
+
+* Think of this as our target.
+
+* Can we solve analytically?
+
+* 1st-order methods to solve numerically. (GD, tricks, Prox, ADMM, CD)
+
+* Properties of the solutions (KKT, Duals)
+
+]
+
+--
+
+.pull-right[
+
+Constant companion
+
+$$
+\min_x \quad f(x) + \lambda  \textrm{pen}(x)
+$$
+
+* Standard type of problem in statistics.
+
+* Why? `\(f\)` is likelihood, `\(\textrm{pen}\)` encodes "prior".
+
+* In fact, Bayesian methods (on the log-scale) are exactly this
+
+* Priors encode structure: sparsity, shrinkage, etc.
+
+* Dantzig selector, Lasso, Ridge, Matrix decomposition, Glasso, Sparse PCA/CCA, Convex Clustering, ELnet, Group lasso, etc.
+
+
+]
+
+---
+
+## Problem
+
+$$
+\min_x \quad f(x) + \lambda  \textrm{pen}(x)
+$$
+
+
+* We have applied our techniques to this problem
+
+* But always for `\(\lambda=\lambda_0\)`
+
+--
+
+**THIS NEVER HAPPENS IN STATISTICS!!**
+
+--
+
+We do not know, a priori, what `\(\lambda_0\)` we want (balance bias and variance).
+
+We use CV, AIC, BIC, etc to choose `\(\lambda^*\)`, after we solved the problem for all `\(\lambda \in \{\lambda_1,\ldots,\lambda_K\}\)`.
+
+
+**Today:** We solve for a bunch of `\(\lambda\)` at once.
+
+---
+
+## Goals
+
+$$
+\min_x \quad f(x) + \lambda  \textrm{pen}(x)
+$$
+
+
+1. Which `\(\{\lambda_1,\ldots,\lambda_K\}\)` do we use?
+
+2. What `\(x_0\)` do we use?
+
+3. If we have a solution at `\(\lambda_i\)`, can this help at `\(\lambda_j\)`?
+
+--
+
+**Methods:**
+
+Use the Dual and KKT conditions to get some insights.
+
+Insights work for many problems of this form, but we'll do them for Lasso.
+
+This address all 3 points.
+
+---
+
+## Lesson 1.
+
+$$
+\min_\beta \quad \frac{1}{2n}\norm{y-X\beta}_2^2 + \lambda \norm{\beta}_1
+$$
+
+* KKT: a solution `\(\hat\beta\)` must satisfy `\(\Rightarrow \frac{1}{n}\left| X^\top_j(y-X\hat{\beta}) \right| \leq \lambda\)` for all `\(j\)`.
+
+* Strict inequality means `\(\hat\beta_j = 0\)`.
+
+* Suppose `\(\hat\beta = 0\)`, how big must `\(\lambda\)` be?
+
+--
+
+* We need `\(\frac{1}{n}\left| X^\top_j y \right| \leq \lambda\)` for all `\(j\)`
+
+* So we take `\(\lambda_{\max} = \frac{1}{n}\norm{X^\top y}_\infty\)`.
+
+--
+
+Appearance of `\(\norm{\cdot}_\infty\)` is not a coincidence.
+
+---
+
+**Lesson 1** actually solved 2 problems
+
+It says 
+
+1. start at `\(\beta_0 = 0\)` and 
+
+2. start at `\(\lambda=\lambda_{\max} = \norm{X^\top y}_\infty\)`
+
+What comes next requires some more tricks to get to `glmnet`
+
+But LARS algorithm uses this.
+
+--
+
+Suppose `\(j\)` gives `\(\lambda_{\max}\)` and all other coefs are zero until `\(\lambda = \lambda_{\max} - \delta\)`.
+
+Now, KKT: `\(-X_j^\top(y-X_j\beta_j) = \lambda \Longrightarrow \beta_j = (\lambda + X_j^\top y) / X_j^\top X_j\)`
+
+This says: "until I get to `\(\lambda_{\max} - \delta\)`, `\(\beta_j\)` is linear in `\(\lambda\)`"
+
+--
+
+From here, new variables are added, but similar arguments hold.
+
+This is called a **Path algorithm** and it is exact. It solves for a whole range of `\(\lambda\)`, not a set of `\(\lambda\)` values.
+
+But it only works in certain cases, and it's not that fast.
+
+---
+
+## Lesson 2.
+
+
+
+
+```r
+x &lt;- matrix(rnorm(100*200), 100)
+y &lt;- x %*% c(rep(5,15), rep(0,185)) + rnorm(100)
+lambda_max &lt;- max(abs(t(y) %*% x)) / 100
+df &lt;- tibble(lambda = seq(lambda_max, lambda_max * 1e-4, length.out = 1000))
+lasso &lt;- glmnet::glmnet(x, y, lambda = df$lambda)
+df$one_norm &lt;- apply(lasso$beta, 2, function(x) sum(abs(x)))
+```
+
+.pull-left[
+
+&lt;img src="rmd_gfx/09-paths/unnamed-chunk-2-1.svg" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+* More action happens for small `\(\lambda\)`
+
+* Typical to space the values on the **log** scale
+
+* `\(\lambda_\max = \norm{y^\top X}_\infty\)`
+
+* `\(\lambda_\min = \epsilon\lambda_\max\)`
+
+* `\(\epsilon = \begin{cases} 0.01 &amp; n &lt; p\\ 0.0001 &amp; p &gt; n \end{cases}\)`
+
+]
+
+---
+
+## Warm starts
+
+1. So we start with `\(\lambda_1=\lambda_\max\)` and `\(\hat\beta_{\lambda_1} = 0\)`. Suppose desired number of `\(\lambda\)`'s is `\(K\)`
+
+2. Now for each `\(i &gt; 1\)`, set `\(\lambda_{k} = \delta\lambda_{k-1}\)` where `\(\delta = \lambda_\min^{1 / (K - 1)}\)`.
+
+3. Initialize `\(\hat\beta_{\lambda_k} = \hat\beta_{\lambda_{k-1}}\)`
+
+4. Run ISTA or FISTA or CD until convergence.
+
+5. Go back to step 2 and repeat until we get to `\(\lambda_\min\)`.
+
+--
+
+Step 3 is called a "warm start". 
+
+The differences between solutions at neighboring `\(\lambda\)`'s usually isn't that much, so we should be nearly there.
+
+In many situations, `glmnet` can be faster to fit 100 values than to fit 1.
+
+---
+
+## Lesson 3.
+
+Since we start with a bunch of 0's, can we tell if a bunch of solutions will still be 0?
+
+The answer is yes.
+
+**SAFE rule** ([El Ghaoui 2010](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2010/EECS-2010-126.html)) is a guarantee but a bit challenging to see:
+
+`$$|X_i^\top y| &lt; \lambda - \norm{X_i}_2\norm{y}\left(\frac{\lambda_\max - \lambda}{\lambda_\max}\right) \Rightarrow \hat\beta_i = 0$$`
+
+--- 
+
+Intuition: start with the dual, write `\(g(u) = \frac{1}{2n}\norm{y}_2^2 - \frac{1}{2n}\norm{y-u}_2^2\)`.
+
+
+
+`$$\textrm{Dual}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda$$`
+
+Take `\(u_0 = \frac{\lambda}{\lambda_\max}y\)`. This is dual feasible. Then, `\(\gamma := g(u_0)\)` is a lower bound for the dual optimum. 
+
+`$$\textrm{Equivalent}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda,\; g(u) \geq \gamma$$`
+
+---
+
+Now consider a related problem.
+
+`$$m_i = \max_u |X_i^\top y| \quad \textrm{s.t.} \quad g(u) \geq \gamma$$`
+
+Now, if `\(m_i &lt; \lambda\)`, then `\(\norm{X_i^\top y} &lt; \lambda\)` so `\(\hat\beta_i = 0\)`.
+
+Solving the above problem gives
+
+`$$m_i = \norm{X_i}_2\sqrt{\norm{y}_2^2 - 2\gamma} + |X_i^\top y|.$$`
+
+Plugging in `\(\gamma\)` gives the SAFE rule.
+
+.center[
+![:scale 50%](gfx/elghaoui.png)
+]
+
+---
+
+## Strong rule
+
+The SAFE rule is a guarantee, but it often retains a lot of variables (that are actually 0 at the solution)
+
+We know that at the solution, `\(\frac{1}{n}|X_j^\top(y-X\hat\beta_\lambda)| &lt; \lambda \Rightarrow \hat\beta_{\lambda j}=0\)`
+
+Try something: write `\(c_j(\lambda) := \frac{1}{n}X_j^\top(y-X\hat\beta_\lambda)\)` (see [Tibshirani et al.](https://web.stanford.edu/~hastie/Papers/strong.pdf)).
+
+**Assume** `\(c_j(\lambda)\)` is 1-Lipschitz in `\(\lambda\)`: `\(|c_j(\lambda)-c_j(\lambda')| \leq |\lambda-\lambda'|\)`.
+
+Now, if `\(|c_j(\lambda_{k-1})|&lt;2\lambda_{k-1}-\lambda_k\)`, then
+$$
+`\begin{aligned}
+|c_j(\lambda_k)| &amp;\leq |c_j(\lambda_k)-c_j(\lambda_{k-1})| + |c_j(\lambda_{k-1})|\\
+&amp;\leq \lambda_{k-1}-\lambda_k + 2\lambda_{k-1}-\lambda_k\\
+&amp;= \lambda_k\\
+&amp;\Rightarrow \hat\beta_j=0
+\end{aligned}`
+$$
+
+--
+
+* Strong Rule: (1) assume 1-Lipschitz, (2) screen out coordinates with `\(|c_j(\lambda_{k-1})|&lt;2\lambda_{k-1}-\lambda_k\)`, (3) do FISTA/CD on those we keep
+
+* This was an assumption, so at the end of a loop, we check for violations with `\(|X_j^\top(y-X\hat\beta(\lambda_k))| \leq \lambda_k\)`
+
+---
+
+## Complete strategy (with CD)
+
+1. Input `\(K\)`. 
+
+2. Find `\(\lambda_\max\)`, calculate `\(\lambda_\min\)`. Set `\(\hat\beta = 0\)`.
+
+3. For `\(k = 2,\ldots, K\)`.
+
+    - Set `\(\hat\beta_k = \hat\beta_{k-1}\)`
+
+    - Find the non-zero coordinates using the strong rule (the active set)
+    
+    - Run CD until convergence on only the active set.
+    
+    - Check the KKT condition for all coordinates. If any have `\(|X_j^\top (y- X\hat\beta_k)| &gt; \lambda_k\)`, then add those to the active set and restart CD at the current solution.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

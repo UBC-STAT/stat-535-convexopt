@@ -18,7 +18,7 @@ icon: "far fa-calendar-alt"
 |27 Jan | [Duality](slides/06-duality.html) | [find the dual](https://learning.github.ubc.ca/STAT-535A-201-2020W/find-the-dual) |  HW 1 due (1/31 @ 23:59)
 |01 Feb | [KKT conditions](slides/07-kkt-conditions.html) | [KKT](https://learning.github.ubc.ca/STAT-535A-201-2020W/kkt-check)  | |
 |03 Feb | [ADMM and CD](slides/08-dual-methods.html) | [Lasso CD and ADMM](https://learning.github.ubc.ca/STAT-535A-201-2020W/admm-cd) |
-|08 Feb | Strong rules and paths | Path for lasso |
+|08 Feb | [Strong rules and paths](slides/09-paths.html) | [Path for lasso](https://learning.github.ubc.ca/STAT-535A-201-2020W/strong-rule) |
 |10 Feb | Newton's method | Newton vs GD | HW 2 due (2/15 @ 23:59)
 |15 Feb | NO CLASS |
 |17 Feb | NO CLASS |
