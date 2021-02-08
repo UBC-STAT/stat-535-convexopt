@@ -152,7 +152,7 @@ It says
 
 1. start at $\beta_0 = 0$ and 
 
-2. start at $\lambda=\lambda_{\max} = \norm{X^\top y}_\infty$
+2. start at $\lambda=\lambda_{\max} = \frac{1}{n}\norm{X^\top y}_\infty$
 
 What comes next requires some more tricks to get to `glmnet`
 
@@ -162,7 +162,7 @@ But LARS algorithm uses this.
 
 Suppose $j$ gives $\lambda_{\max}$ and all other coefs are zero until $\lambda = \lambda_{\max} - \delta$.
 
-Now, KKT: $-X_j^\top(y-X_j\beta_j) = \lambda \Longrightarrow \beta_j = (\lambda + X_j^\top y) / X_j^\top X_j$
+Now, KKT: $-\frac{1}{n}X_j^\top(y-X_j\beta_j) = \pm\lambda \Longrightarrow \beta_j = (\frac{1}{n}X_j^\top y \pm \lambda) / \frac{1}{n}X_j^\top X_j$
 
 This says: "until I get to $\lambda_{\max} - \delta$, $\beta_j$ is linear in $\lambda$"
 
@@ -301,9 +301,9 @@ $$
 
 --
 
-* Strong Rule: (1) assume 1-Lipschitz, (2) screen out coordinates with $|c_j(\lambda_{k-1})|<2\lambda_{k-1}-\lambda_k$, (3) do FISTA/CD on those we keep
+* Strong Rule: (1) assume 1-Lipschitz, (2) screen out coordinates with $|c_j(\lambda_{k-1})|<2\lambda_{k}-\lambda_{k-1}$, (3) do FISTA/CD on those we keep
 
-* This was an assumption, so at the end of a loop, we check for violations with $|X_j^\top(y-X\hat\beta(\lambda_k))| \leq \lambda_k$
+* This was an assumption, so at the end of a loop, we check for violations with $\frac{1}{n}|X_j^\top(y-X\hat\beta(\lambda_k))| > \lambda_k$
 
 ---
 
@@ -321,6 +321,6 @@ $$
     
     - Run CD until convergence on only the active set.
     
-    - Check the KKT condition for all coordinates. If any have $|X_j^\top (y- X\hat\beta_k)| > \lambda_k$, then add those to the active set and restart CD at the current solution.
+    - Check the KKT condition for all coordinates. If any have $\frac{1}{n}|X_j^\top (y- X\hat\beta_k)| > \lambda_k$, then add those to the active set and restart CD at the current solution.
     
 
