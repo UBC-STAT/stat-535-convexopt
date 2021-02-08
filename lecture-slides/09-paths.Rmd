@@ -205,7 +205,7 @@ ggplot(df, aes(lambda, one_norm)) +
 
 * Typical to space the values on the **log** scale
 
-* $\lambda_\max = \norm{y^\top X}_\infty$
+* $\lambda_\max = \frac{1}{n}\norm{X^\top y}_\infty$
 
 * $\lambda_\min = \epsilon\lambda_\max$
 
@@ -219,7 +219,7 @@ ggplot(df, aes(lambda, one_norm)) +
 
 1. So we start with $\lambda_1=\lambda_\max$ and $\hat\beta_{\lambda_1} = 0$. Suppose desired number of $\lambda$'s is $K$
 
-2. Now for each $i > 1$, set $\lambda_{k} = \delta\lambda_{k-1}$ where $\delta = \lambda_\min^{1 / (K - 1)}$.
+2. Now for each $i > 1$, set $\lambda_{k} = \delta\lambda_{k-1}$ where $\delta = \epsilon^{1 / (K - 1)}$.
 
 3. Initialize $\hat\beta_{\lambda_k} = \hat\beta_{\lambda_{k-1}}$
 
@@ -289,11 +289,11 @@ Try something: write $c_j(\lambda) := \frac{1}{n}X_j^\top(y-X\hat\beta_\lambda)$
 
 **Assume** $c_j(\lambda)$ is 1-Lipschitz in $\lambda$: $|c_j(\lambda)-c_j(\lambda')| \leq |\lambda-\lambda'|$.
 
-Now, if $|c_j(\lambda_{k-1})|<2\lambda_{k-1}-\lambda_k$, then
+Now, if $|c_j(\lambda_{k-1})|<2\lambda_{k}-\lambda_{k-1}$, then
 $$
 \begin{aligned}
 |c_j(\lambda_k)| &\leq |c_j(\lambda_k)-c_j(\lambda_{k-1})| + |c_j(\lambda_{k-1})|\\
-&\leq \lambda_{k-1}-\lambda_k + 2\lambda_{k-1}-\lambda_k\\
+&\leq (\lambda_{k-1}-\lambda_k) + (2\lambda_{k}-\lambda_{k-1})\\
 &= \lambda_k\\
 &\Rightarrow \hat\beta_j=0
 \end{aligned}
