@@ -219,7 +219,7 @@ df$one_norm &lt;- apply(lasso$beta, 2, function(x) sum(abs(x)))
 
 * `\(\lambda_\min = \epsilon\lambda_\max\)`
 
-* `\(\epsilon = \begin{cases} 0.01 &amp; n &lt; p\\ 0.0001 &amp; p &gt; n \end{cases}\)`
+* `\(\epsilon = \begin{cases} 0.01 &amp; n &lt; p\\ 0.0001 &amp; n &gt; p \end{cases}\)`
 
 ]
 
@@ -263,19 +263,19 @@ Intuition: start with the dual, write `\(g(u) = \frac{1}{2n}\norm{y}_2^2 - \frac
 
 
 
-`$$\textrm{Dual}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda$$`
+`$$\textrm{Dual}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top u}_\infty \leq \lambda$$`
 
 Take `\(u_0 = \frac{\lambda}{\lambda_\max}y\)`. This is dual feasible. Then, `\(\gamma := g(u_0)\)` is a lower bound for the dual optimum. 
 
-`$$\textrm{Equivalent}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda,\; g(u) \geq \gamma$$`
+`$$\textrm{Equivalent}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top u}_\infty \leq \lambda,\; g(u) \geq \gamma$$`
 
 ---
 
 Now consider a related problem.
 
-`$$m_i = \max_u |X_i^\top y| \quad \textrm{s.t.} \quad g(u) \geq \gamma$$`
+`$$m_i = \max_u |X_i^\top u| \quad \textrm{s.t.} \quad g(u) \geq \gamma$$`
 
-Now, if `\(m_i &lt; \lambda\)`, then `\(\norm{X_i^\top y} &lt; \lambda\)` so `\(\hat\beta_i = 0\)`.
+Now, if `\(m_i &lt; \lambda\)`, then `\(\norm{X_i^\top u} &lt; \lambda\)` so `\(\hat\beta_i = 0\)`.
 
 Solving the above problem gives
 
@@ -321,7 +321,7 @@ $$
 
 1. Input `\(K\)`. 
 
-2. Find `\(\lambda_\max\)`, calculate `\(\lambda_\min\)`. Set `\(\hat\beta = 0\)`.
+2. Find `\(\lambda_\max\)`. Set `\(\hat\beta = 0\)`.
 
 3. For `\(k = 2,\ldots, K\)`.
 

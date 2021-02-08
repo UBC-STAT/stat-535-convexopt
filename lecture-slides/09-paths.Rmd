@@ -209,7 +209,7 @@ ggplot(df, aes(lambda, one_norm)) +
 
 * $\lambda_\min = \epsilon\lambda_\max$
 
-* $\epsilon = \begin{cases} 0.01 & n < p\\ 0.0001 & p > n \end{cases}$
+* $\epsilon = \begin{cases} 0.01 & n < p\\ 0.0001 & n > p \end{cases}$
 
 ]
 
@@ -253,19 +253,19 @@ Intuition: start with the dual, write $g(u) = \frac{1}{2n}\norm{y}_2^2 - \frac{1
 
 
 
-$$\textrm{Dual}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda$$
+$$\textrm{Dual}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top u}_\infty \leq \lambda$$
 
 Take $u_0 = \frac{\lambda}{\lambda_\max}y$. This is dual feasible. Then, $\gamma := g(u_0)$ is a lower bound for the dual optimum. 
 
-$$\textrm{Equivalent}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top y}_\infty \leq \lambda,\; g(u) \geq \gamma$$
+$$\textrm{Equivalent}\quad \max_u g(u) \quad\textrm{s.t.}\quad\norm{X^\top u}_\infty \leq \lambda,\; g(u) \geq \gamma$$
 
 ---
 
 Now consider a related problem.
 
-$$m_i = \max_u |X_i^\top y| \quad \textrm{s.t.} \quad g(u) \geq \gamma$$
+$$m_i = \max_u |X_i^\top u| \quad \textrm{s.t.} \quad g(u) \geq \gamma$$
 
-Now, if $m_i < \lambda$, then $\norm{X_i^\top y} < \lambda$ so $\hat\beta_i = 0$.
+Now, if $m_i < \lambda$, then $\norm{X_i^\top u} < \lambda$ so $\hat\beta_i = 0$.
 
 Solving the above problem gives
 
@@ -311,7 +311,7 @@ $$
 
 1. Input $K$. 
 
-2. Find $\lambda_\max$, calculate $\lambda_\min$. Set $\hat\beta = 0$.
+2. Find $\lambda_\max$. Set $\hat\beta = 0$.
 
 3. For $k = 2,\ldots, K$.
 
