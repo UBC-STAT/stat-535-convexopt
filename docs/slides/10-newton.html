@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>10 Newton’s method</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STAT 535A" />
+    <meta name="author" content="Daniel J. McDonald" />
+    <script src="https://kit.fontawesome.com/ae71192e04.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="materials/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="materials/slides-style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 10 Newton’s method
+### STAT 535A
+### Daniel J. McDonald
+### Last modified - 2021-02-15
+
+---
+
+
+
+
+## So far
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+.pull-left[
+
+$$
+`\begin{aligned}
+\min_x &amp;\quad f(x)\\
+\textrm{s.t} &amp;\quad Ax-b=0\\
+&amp;\quad h_i(x)\leq 0
+\end{aligned}`
+$$
+
+* Think of this as our target.
+
+* Can we solve analytically?
+
+* 1st-order methods to solve numerically. (GD, tricks, Prox, ADMM, CD)
+
+* Properties of the solutions (KKT, Duals)
+
+]
+
+--
+
+.pull-right[
+
+* What about second order methods?
+
+* Today: Newton's method with and without constraints.
+
+]
+
+---
+
+## Motivation
+
+Recall our reasoning for Gradient Descent:
+
+&gt; Taylor expansion
+$$
+f(x) \approx f(x_0) + \nabla f(x_0)^{\top}(x-x_0) + \frac{1}{2}(x-x_0)^\top H(x_0) (x-x_0)
+$$
+- replace `\(H\)` with `\(\gamma^{-1} I\)`
+- minimize the quadratic approximation in `\(x\)`:
+$$
+0\overset{\textrm{set}}{=}\nabla f(x_0) + \frac{1}{\gamma}(x-x_0) \Longrightarrow x = x_0 - \gamma \nabla f(x_0)
+$$
+
+--
+
+Don't replace `\(H\)`:
+
+$$
+0\overset{\textrm{set}}{=}\nabla f(x_0) + H(x_0) (x-x_0) \Longrightarrow x = x_0 - (H(x_0))^{-1}\nabla f(x_0)
+$$
+
+---
+
+## Minimizing the negative log-likelihood
+
+Logistic regression
+
+`$$\min_\beta -\ell(\beta) = -\frac{1}{n} \sum_{i=1}^n y_i\log(h(x_i^\top\beta)) + (1-y_i)\log(1-h(x_i^\top\beta)) = -\frac{1}{n}\sum_{i=1}^n \left[y_i x_i^\top \beta - \log(1 + e^{x_i^\top \beta})\right]$$`
+
+where `\(h(z) = 1 / ( 1 + e^{-z})\)`.
+
+Then (algebra):
+
+1. `\(\nabla \ell(\beta) = -\frac{1}{n} \sum_{i=1}^n x_i (y_i - h(x_i^\top \beta))\)`
+
+2. `\(H(\beta) = \frac{1}{n} \sum_{i=1}^n x_i x_i^\top h(x_i^\top\beta)(1-h(x_i^\top\beta))\)`
+
+--
+
+Compactly, write `\(p_i(\beta) = h(x_i^\top\beta)\)`, `\(W_{ii}(\beta) = p_i(1-p_i)\)`
+
+Newton's method:
+`$$\begin{aligned} \beta^{(k+1)} 
+&amp;= \beta^{(k)} + (X^\top WX)^{-1} X^\top(y-p)\\
+&amp;= (X^\top W X)^{-1}X^\top W \left(X\beta^{(k)} + W^{-1}(y-p)\right)\\
+&amp;= (X^\top W X)^{-1}X^\top W z\end{aligned}$$`
+
+Leads to IRWLS.
+
+---
+
+## Newton example
+
+
+
+.pull-left[
+
+`\(f(x) = e^{x_1 + 3x_2 - .1} + e^{x_1 - 3x_2 - .1} + e^{-x_1 - .1}\)`
+
+
+```r
+fcomp &lt;- function(x) {
+  exp(c(x[1] + 3*x[2], 
+        x[1] - 3*x[2],
+        -x[1]) - .1)
+}
+f &lt;- function(x) sum(fcomp(x))
+fgrad &lt;- function(x) {
+  c(fcomp(x) %*% c(1, 1, -1),
+    fcomp(x) %*% c(3, -3, 0))
+}
+fhess &lt;- function(x) {
+  matrix(c(
+    fcomp(x) %*% c(1,1,1),
+    fcomp(x) %*% c(3,-3,0),
+    fcomp(x) %*% c(3,-3,0),
+    fcomp(x) %*% c(9,9,0)), 2)
+}
+```
+]
+
+.pull-right[
+
+![](rmd_gfx/10-newton/unnamed-chunk-2-1.svg)&lt;!-- --&gt;
+]
+
+
+---
+
+## Regular Newton
+
+
+.pull-left[
+
+```r
+xn &lt;- matrix(0, 20, 2)
+xn[1,] &lt;- c(-2.5, 2.5)
+for (i in 2:20) {
+  xn[i,] &lt;- xn[i - 1,] -
+    solve(fhess(xn[i - 1,])) %*% 
+    fgrad(xn[i - 1,])
+}
+```
+]
+
+.pull-right[
+![](rmd_gfx/10-newton/unnamed-chunk-4-1.svg)&lt;!-- --&gt;
+]
+
+---
+
+## Damped Newton (with backtracking)
+
+
+.pull-left[
+
+```r
+gamma &lt;- 1 
+alpha &lt;- 0.5
+tau &lt;- 0.9
+xn &lt;- matrix(0, 20, 2) 
+xn[1,] &lt;- c(-2.5, 2.5)
+i &lt;- 1
+maxbt &lt;- 0
+while (i &lt; 20) {
+  i &lt;- i + 1
+  gamma0 &lt;- gamma
+  gr &lt;- fgrad(xn[i-1,])
+  gg &lt;- solve(fhess(xn[i - 1,])) %*% gr
+  lam2 &lt;- t(gr) %*% gg
+  prop &lt;- xn[i - 1,] - gamma0 * gg
+  while (f(prop) &gt; f(xn[i - 1,]) - 
+         alpha * gamma0 * lam2 &amp;&amp; 
+         maxbt &lt; 50) { # not too many
+    maxbt &lt;- maxbt + 1
+    gamma0 &lt;- tau * gamma0
+    prop &lt;- xn[i - 1,] - gamma0 * gg
+  }
+  # should check lam2 &lt; eps to stop
+  xn[i,] &lt;- prop
+}
+```
+]
+
+.pull-right[
+![](rmd_gfx/10-newton/unnamed-chunk-6-1.svg)&lt;!-- --&gt;
+]
+
+
+---
+
+## Equality constrained Newton
+
+Minimize same function subject `\(Ax=b\)`
+
+KKT matrix
+`$$\begin{bmatrix}
+f''(x) &amp; A^\top\\ A &amp; 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix}-f'(x) \\ 0\end{bmatrix}$$`
+
+The update is the solution to this linear system. `\(w\)` is the dual variable.
+
+Everything is the same, but we invert a bigger matrix.
+
+---
+
+## Our example
+
+Arbitrarily, suppose we want `\(x=-y\)`. So `\(A=(1,\ 1)^\top\)` and `\(b=0\)`.
+
+Note that we start with a feasible point.
+
+.pull-left[
+
+```r
+xn &lt;- matrix(0, 20, 2)
+xn[1,] &lt;- c(-2.5, 2.5)
+for (i in 2:20) {
+  mat &lt;- rbind(cbind(
+    fhess(xn[i - 1,]), c(1, 1)),
+    c(1, 1, 0))
+  delx &lt;- solve(mat) %*% c(fgrad(xn[i - 1,]), 0)
+  xn[i,] &lt;- xn[i - 1,] - delx[1:2]
+  # I'm just ignoring the dual variable
+}
+```
+]
+
+.pull-right[
+![](rmd_gfx/10-newton/unnamed-chunk-8-1.svg)&lt;!-- --&gt;
+]
+
+---
+
+## Same but infeasible start
+
+KKT matrix
+`$$\begin{bmatrix}
+f''(x) &amp; A^\top\\ A &amp; 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix}-f'(x)\\Ax-b\end{bmatrix}$$`
+
+.pull-left[
+
+```r
+xn &lt;- matrix(0, 20, 2)
+xn[1,] &lt;- c(-2.5, 1.5); 
+for (i in 2:20) {
+  mat &lt;- rbind(cbind(
+    fhess(xn[i - 1,]), c(1, 1)),
+    c(1, 1, 0))
+  delx &lt;- solve(mat) %*% 
+    c(fgrad(xn[i - 1,]), sum(xn[i - 1,]))
+  xn[i,] &lt;- xn[i - 1,] - delx[1:2]
+  # I'm just ignoring the dual variable
+}
+```
+]
+
+.pull-right[
+![](rmd_gfx/10-newton/unnamed-chunk-10-1.svg)&lt;!-- --&gt;
+]
+
+---
+
+## Inequality constraints
+
+We'll do nonlinear just for fun.
+
+Suppose we want `\(g(x)&lt;0\)` (standard form).
+
+We think of this as an indicator `\(I(g(x)&lt;0)\)` and put it in the objective.
+
+But indicators are not differentiable, so relax to `\(\phi(x)/\gamma:=-\log(-g(x))/\gamma\)`.
+
+The KKT matrix becomes
+`$$\begin{bmatrix}
+\gamma f''(x)+\phi''(x) &amp; A^\top\\ A &amp; 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix} - \gamma f'(x)-\phi'(x) \\0\end{bmatrix}$$`
+
+
+Note
+`$$\phi'(x) = -g'(x)/g(x),\quad \phi''(x)=\frac{1}{g(x)^2}g'(x)(g'(x))^\top
+-g''(x)/g(x)$$`
+
+
+---
+
+## Still our example
+
+For no reason, we take `\(g(x) = \exp(x_1)+\exp(x_2)-4\)`. Make linear constraint `\(2x_1=x_2\)`
+
+Some setup.
+
+```r
+xn &lt;- matrix(0, 100, 2)
+xn[1,] &lt;- c(-1.25, -2.5) #strictly feasible 
+gam &lt;- 1
+mu &lt;- 3
+gfun &lt;- function(x) sum(exp(x)) - 4
+phip &lt;- function(x) -exp(x) / gfun(x)
+phipp &lt;- function(x) {
+  exp(x) %o% exp(x) / gfun(x)^2 -
+    diag(exp(x)) / gfun(x)
+}
+maxit &lt;- 100
+i &lt;- 2
+conv &lt;- FALSE
+```
+
+---
+
+.pull-left[
+
+```r
+while (i &lt; maxit &amp; gam &lt; 150) {
+  while (i &lt; maxit &amp; !conv) {
+    mat &lt;- rbind(cbind(
+      gam * fhess(xn[i-1,]) + phipp(xn[i-1,]),
+      c(2, -1)), c(2, -1, 0))
+    rhs &lt;- c(gam * fgrad(xn[i - 1,]) + 
+               phip(xn[i - 1,]), 0)
+    delx &lt;- solve(mat) %*% rhs
+    lam2 &lt;- t(rhs) %*% delx
+    xn[i,] &lt;- xn[i-1,] - delx[1:2]
+    if (lam2/2 &lt; .001) {
+      conv &lt;- TRUE
+      print(paste0("1 Newton down, Iter = ", i))
+    }
+    i &lt;- i + 1
+  }
+  gam &lt;- mu * gam 
+  conv &lt;- FALSE
+}
+```
+
+```
+## [1] "1 Newton down, Iter = 9"
+## [1] "1 Newton down, Iter = 11"
+## [1] "1 Newton down, Iter = 13"
+## [1] "1 Newton down, Iter = 15"
+## [1] "1 Newton down, Iter = 16"
+```
+
+```r
+xn &lt;- xn[1:(i - 1),]
+```
+]
+
+.pull-right[
+![](rmd_gfx/10-newton/unnamed-chunk-13-1.svg)&lt;!-- --&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="materials/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "ocean",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

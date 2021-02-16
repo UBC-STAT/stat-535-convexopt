@@ -1,0 +1,393 @@
+---
+title: "10 Newton's method"
+author: 
+  - "STAT 535A"
+  - "Daniel J. McDonald"
+date: 'Last modified - `r Sys.Date()`'
+---
+
+```{r setup, include=FALSE}
+source("rmd_config.R")
+```
+
+## So far
+
+
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\indicator}{1}
+\renewcommand{\bar}{\overline}
+\renewcommand{\hat}{\widehat}
+\newcommand{\tr}[1]{\mbox{tr}(#1)}
+\newcommand{\Set}[1]{\left\{#1\right\}}
+\newcommand{\dom}[1]{\textrm{dom}\left(#1\right)}
+\newcommand{\st}{\;\;\textrm{ s.t. }\;\;}
+$$
+
+.pull-left[
+
+$$
+\begin{aligned}
+\min_x &\quad f(x)\\
+\textrm{s.t} &\quad Ax-b=0\\
+&\quad h_i(x)\leq 0
+\end{aligned}
+$$
+
+* Think of this as our target.
+
+* Can we solve analytically?
+
+* 1st-order methods to solve numerically. (GD, tricks, Prox, ADMM, CD)
+
+* Properties of the solutions (KKT, Duals)
+
+]
+
+--
+
+.pull-right[
+
+* What about second order methods?
+
+* Today: Newton's method with and without constraints.
+
+]
+
+---
+
+## Motivation
+
+Recall our reasoning for Gradient Descent:
+
+> Taylor expansion
+$$
+f(x) \approx f(x_0) + \nabla f(x_0)^{\top}(x-x_0) + \frac{1}{2}(x-x_0)^\top H(x_0) (x-x_0)
+$$
+- replace $H$ with $\gamma^{-1} I$
+- minimize the quadratic approximation in $x$:
+$$
+0\overset{\textrm{set}}{=}\nabla f(x_0) + \frac{1}{\gamma}(x-x_0) \Longrightarrow x = x_0 - \gamma \nabla f(x_0)
+$$
+
+--
+
+Don't replace $H$:
+
+$$
+0\overset{\textrm{set}}{=}\nabla f(x_0) + H(x_0) (x-x_0) \Longrightarrow x = x_0 - (H(x_0))^{-1}\nabla f(x_0)
+$$
+
+---
+
+## Minimizing the negative log-likelihood
+
+Logistic regression
+
+$$\min_\beta -\ell(\beta) = -\frac{1}{n} \sum_{i=1}^n y_i\log(h(x_i^\top\beta)) + (1-y_i)\log(1-h(x_i^\top\beta)) = -\frac{1}{n}\sum_{i=1}^n \left[y_i x_i^\top \beta - \log(1 + e^{x_i^\top \beta})\right]$$
+
+where $h(z) = 1 / ( 1 + e^{-z})$.
+
+Then (algebra):
+
+1. $\nabla \ell(\beta) = -\frac{1}{n} \sum_{i=1}^n x_i (y_i - h(x_i^\top \beta))$
+
+2. $H(\beta) = \frac{1}{n} \sum_{i=1}^n x_i x_i^\top h(x_i^\top\beta)(1-h(x_i^\top\beta))$
+
+--
+
+Compactly, write $p_i(\beta) = h(x_i^\top\beta)$, $W_{ii}(\beta) = p_i(1-p_i)$
+
+Newton's method:
+$$\begin{aligned} \beta^{(k+1)} 
+&= \beta^{(k)} + (X^\top WX)^{-1} X^\top(y-p)\\
+&= (X^\top W X)^{-1}X^\top W \left(X\beta^{(k)} + W^{-1}(y-p)\right)\\
+&= (X^\top W X)^{-1}X^\top W z\end{aligned}$$
+
+Leads to IRWLS.
+
+---
+
+## Newton example
+
+
+
+.pull-left[
+
+$f(x) = e^{x_1 + 3x_2 - .1} + e^{x_1 - 3x_2 - .1} + e^{-x_1 - .1}$
+
+```{r}
+fcomp <- function(x) {
+  exp(c(x[1] + 3*x[2], 
+        x[1] - 3*x[2],
+        -x[1]) - .1)
+}
+f <- function(x) sum(fcomp(x))
+fgrad <- function(x) {
+  c(fcomp(x) %*% c(1, 1, -1),
+    fcomp(x) %*% c(3, -3, 0))
+}
+fhess <- function(x) {
+  matrix(c(
+    fcomp(x) %*% c(1,1,1),
+    fcomp(x) %*% c(3,-3,0),
+    fcomp(x) %*% c(3,-3,0),
+    fcomp(x) %*% c(9,9,0)), 2)
+}
+```
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+ttt <- expand.grid(x1 = -50:50 / 15, x2 = -50:50 / 15) 
+ttt$z <- ttt %>% apply(1, f)
+gp <- ggplot(ttt, aes(x1, x2)) + 
+  geom_raster(aes(fill = log(z))) +
+  scale_fill_viridis_c() +
+  geom_contour(aes(z = log(z))) +
+  theme_bw(20) +
+  theme(legend.position = "none")
+gp
+```
+]
+
+
+---
+
+## Regular Newton
+
+
+.pull-left[
+```{r}
+xn <- matrix(0, 20, 2)
+xn[1,] <- c(-2.5, 2.5)
+for (i in 2:20) {
+  xn[i,] <- xn[i - 1,] -
+    solve(fhess(xn[i - 1,])) %*% 
+    fgrad(xn[i - 1,])
+}
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+tib <- tibble(x1 = xn[,1], x2 = xn[,2])
+gp + geom_path(data = tib, aes(x1, x2)) + 
+  geom_point(data = tib, aes(x1,x2), color = orange, size = 2)
+```
+]
+
+---
+
+## Damped Newton (with backtracking)
+
+
+.pull-left[
+```{r}
+gamma <- 1 
+alpha <- 0.5
+tau <- 0.9
+xn <- matrix(0, 20, 2) 
+xn[1,] <- c(-2.5, 2.5)
+i <- 1
+maxbt <- 0
+while (i < 20) {
+  i <- i + 1
+  gamma0 <- gamma
+  gr <- fgrad(xn[i-1,])
+  gg <- solve(fhess(xn[i - 1,])) %*% gr
+  lam2 <- t(gr) %*% gg
+  prop <- xn[i - 1,] - gamma0 * gg
+  while (f(prop) > f(xn[i - 1,]) - 
+         alpha * gamma0 * lam2 && 
+         maxbt < 50) { # not too many
+    maxbt <- maxbt + 1
+    gamma0 <- tau * gamma0
+    prop <- xn[i - 1,] - gamma0 * gg
+  }
+  # should check lam2 < eps to stop
+  xn[i,] <- prop
+}
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+tib <- tibble(x1 = xn[,1], x2 = xn[,2])
+gp + geom_path(data = tib, aes(x1,x2)) + 
+  geom_point(data = tib, aes(x1, x2), color = orange, size = 2)
+```
+]
+
+
+---
+
+## Equality constrained Newton
+
+Minimize same function subject $Ax=b$
+
+KKT matrix
+$$\begin{bmatrix}
+f''(x) & A^\top\\ A & 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix}-f'(x) \\ 0\end{bmatrix}$$
+
+The update is the solution to this linear system. $w$ is the dual variable.
+
+Everything is the same, but we invert a bigger matrix.
+
+---
+
+## Our example
+
+Arbitrarily, suppose we want $x=-y$. So $A=(1,\ 1)^\top$ and $b=0$.
+
+Note that we start with a feasible point.
+
+.pull-left[
+```{r}
+xn <- matrix(0, 20, 2)
+xn[1,] <- c(-2.5, 2.5)
+for (i in 2:20) {
+  mat <- rbind(cbind(
+    fhess(xn[i - 1,]), c(1, 1)),
+    c(1, 1, 0))
+  delx <- solve(mat) %*% c(fgrad(xn[i - 1,]), 0)
+  xn[i,] <- xn[i - 1,] - delx[1:2]
+  # I'm just ignoring the dual variable
+}
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+tib = tibble(x1 = xn[,1], x2 = xn[,2])
+gp + 
+  geom_abline(slope=-1,intercept = 0, color = "yellow") +
+  geom_path(data = tib, aes(x1, x2)) + 
+  geom_point(data = tib, aes(x1, x2), color = orange, size = 3)
+```
+]
+
+---
+
+## Same but infeasible start
+
+KKT matrix
+$$\begin{bmatrix}
+f''(x) & A^\top\\ A & 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix}-f'(x)\\Ax-b\end{bmatrix}$$
+
+.pull-left[
+```{r}
+xn <- matrix(0, 20, 2)
+xn[1,] <- c(-2.5, 1.5); 
+for (i in 2:20) {
+  mat <- rbind(cbind(
+    fhess(xn[i - 1,]), c(1, 1)),
+    c(1, 1, 0))
+  delx <- solve(mat) %*% 
+    c(fgrad(xn[i - 1,]), sum(xn[i - 1,]))
+  xn[i,] <- xn[i - 1,] - delx[1:2]
+  # I'm just ignoring the dual variable
+}
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+tib <- tibble(x1 = xn[,1], x2 = xn[,2])
+gp + 
+  geom_abline(slope=-1,intercept = 0, color = "yellow") +
+  geom_path(data = tib, aes(x1, x2)) + 
+  geom_point(data = tib, aes(x1, x2), color = orange, size = 3)
+```
+]
+
+---
+
+## Inequality constraints
+
+We'll do nonlinear just for fun.
+
+Suppose we want $g(x)<0$ (standard form).
+
+We think of this as an indicator $I(g(x)<0)$ and put it in the objective.
+
+But indicators are not differentiable, so relax to $\phi(x)/\gamma:=-\log(-g(x))/\gamma$.
+
+The KKT matrix becomes
+$$\begin{bmatrix}
+\gamma f''(x)+\phi''(x) & A^\top\\ A & 0
+\end{bmatrix} \begin{bmatrix}\Delta x \\ w \end{bmatrix}
+=\begin{bmatrix} - \gamma f'(x)-\phi'(x) \\0\end{bmatrix}$$
+
+
+Note
+$$\phi'(x) = -g'(x)/g(x),\quad \phi''(x)=\frac{1}{g(x)^2}g'(x)(g'(x))^\top
+-g''(x)/g(x)$$
+
+
+---
+
+## Still our example
+
+For no reason, we take $g(x) = \exp(x_1)+\exp(x_2)-4$. Make linear constraint $2x_1=x_2$
+
+Some setup.
+```{r}
+xn <- matrix(0, 100, 2)
+xn[1,] <- c(-1.25, -2.5) #strictly feasible 
+gam <- 1
+mu <- 3
+gfun <- function(x) sum(exp(x)) - 4
+phip <- function(x) -exp(x) / gfun(x)
+phipp <- function(x) {
+  exp(x) %o% exp(x) / gfun(x)^2 -
+    diag(exp(x)) / gfun(x)
+}
+maxit <- 100
+i <- 2
+conv <- FALSE
+```
+
+---
+
+.pull-left[
+```{r}
+while (i < maxit & gam < 150) {
+  while (i < maxit & !conv) {
+    mat <- rbind(cbind(
+      gam * fhess(xn[i-1,]) + phipp(xn[i-1,]),
+      c(2, -1)), c(2, -1, 0))
+    rhs <- c(gam * fgrad(xn[i - 1,]) + 
+               phip(xn[i - 1,]), 0)
+    delx <- solve(mat) %*% rhs
+    lam2 <- t(rhs) %*% delx
+    xn[i,] <- xn[i-1,] - delx[1:2]
+    if (lam2/2 < .001) {
+      conv <- TRUE
+      print(paste0("1 Newton down, Iter = ", i))
+    }
+    i <- i + 1
+  }
+  gam <- mu * gam 
+  conv <- FALSE
+}
+xn <- xn[1:(i - 1),]
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+tib <-tibble(x1 = xn[,1], x2 = xn[,2])
+gp + 
+  geom_abline(slope = 2, intercept = 0, color = orange) +
+  geom_path(data = tib, aes(x1, x2)) +
+  geom_point(data = tib, aes(x1, x2), size = 3)
+```
+]
